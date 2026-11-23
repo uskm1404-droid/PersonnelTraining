@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>سامانه آموزش و امتیاز پرسنل</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--text:#172033;--muted:#5d6b82;--line:#dbe3ef;--pri:#2457d6;--pri-t:#fff;--ok:#157347;--warn:#b45309;--bad:#b42318;--soft:#eef3fb;--general:#0369a1;--semi:#b45309;--specific:#7c3aed;--r:14px}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1521;--card:#171f2f;--text:#e8edf6;--muted:#9aa8bf;--line:#2a3550;--pri:#5b8cff;--pri-t:#0b1020;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--soft:#1e2840;--general:#38bdf8;--semi:#fbbf24;--specific:#c4b5fd}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.8 Vazirmatn,Tahoma,"Segoe UI",system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+header.top{background:linear-gradient(135deg,#1e3a8a,#2457d6);color:#fff;padding:14px 16px}
+header.top h1{margin:0;font-size:1.2rem}header.top small,header.top #status{color:#fff;opacity:.9}
+#status{font-size:.8rem;opacity:.95;margin-top:4px}
+nav{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:6px 10px}
+nav button{border:0;background:none;padding:8px 14px;border-radius:10px;white-space:nowrap;cursor:pointer;color:var(--muted)}
+nav button.on{background:var(--pri);color:var(--pri-t)}
+main{max-width:1180px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px}
+h2{font-size:1.05rem;margin:0 0 10px}h3{margin:0}h4{margin:14px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.m{background:var(--soft);border-radius:12px;padding:10px}.m b{display:block;font-size:1.3rem}.m span{color:var(--muted);font-size:.85rem}
+.m.w b{color:var(--warn)}.m.b b{color:var(--bad)}
+.btn{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:8px 13px;cursor:pointer}
+.btn.pri{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}.btn.bad{background:var(--bad);color:#fff;border-color:var(--bad)}.btn.sm{padding:3px 9px;font-size:.85rem}
+.btn.on{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.bar .sp{flex:1}
+input,select,textarea{border:1px solid var(--line);border-radius:9px;padding:8px;background:var(--card);width:100%}
+.bar input,.bar select{width:auto;min-width:130px}
+label{display:block;margin:8px 0;font-size:.9rem;color:var(--muted)}label input,label select,label textarea{margin-top:3px;color:var(--text)}
+label.ck{display:flex;gap:8px;align-items:center}label.ck input{width:auto}
+.inl{display:flex;gap:6px}
+.tw{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:center;vertical-align:middle}th{background:var(--soft);font-weight:600;font-size:.85rem}
+td.l,th.l{text-align:right}tr.off{opacity:.55}.acts{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.bd{display:inline-block;padding:1px 9px;border-radius:99px;font-size:.78rem;border:1px solid currentColor;white-space:nowrap;margin:1px}
+.bd.general{color:var(--general)}.bd.semi{color:var(--semi)}.bd.specific{color:var(--specific)}.bd.man{color:var(--muted)}.bd.ok{color:var(--ok)}.bd.warn{color:var(--warn)}.bd.bad{color:var(--bad)}
+.muted,small,.hint{color:var(--muted)}.hint{font-size:.85rem}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;border-inline-start:5px solid var(--line)}
+.row.p{border-inline-start-color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,transparent)}.row.a{border-inline-start-color:var(--bad);background:color-mix(in srgb,var(--bad) 7%,transparent)}
+.who small{display:block}.seg{display:flex;gap:4px;align-items:center}.seg button{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 14px;cursor:pointer;min-width:60px}
+.seg button.on.p{background:var(--ok);color:#fff;border-color:var(--ok)}.seg button.on.a{background:var(--bad);color:#fff;border-color:var(--bad)}
+.note{grid-column:1/-1;font-size:.82rem}.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}
+.banner{background:color-mix(in srgb,var(--warn) 14%,transparent);border:1px solid var(--warn);border-radius:12px;padding:10px;margin-bottom:12px}
+.bars div.b{display:grid;grid-template-columns:110px 1fr 50px;gap:8px;align-items:center;margin:5px 0}.bars i{display:block;height:12px;border-radius:6px;background:var(--pri)}
+.ov{position:fixed;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:12px}
+.modal{background:var(--card);border-radius:16px;max-width:560px;width:100%;max-height:92vh;display:flex;flex-direction:column}.modal.wide{max-width:900px}
+.modal header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.modal .x{border:0;background:none;font-size:1.5rem;cursor:pointer}.mb{padding:10px 16px;overflow:auto}
+.modal footer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}.err{color:var(--bad);padding:0 16px 10px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 18px;border-radius:12px;z-index:99;display:none;max-width:90%}
+#toast.bad{background:var(--bad)}
+footer.ft{text-align:center;color:var(--muted);padding:18px;font-size:.85rem}
+.pt{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.empty{text-align:center;padding:30px;color:var(--muted)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.cal .h{text-align:center;font-weight:600;font-size:.8rem;color:var(--muted)}
+.cal .d{min-height:84px;border:1px solid var(--line);border-radius:8px;padding:4px;font-size:.8rem;overflow:hidden}.cal .d.e{border:0}.cal .d.fr{background:color-mix(in srgb,var(--bad) 6%,transparent)}.cal .d.td{outline:2px solid var(--pri)}
+.chip{display:block;background:var(--soft);border:0;border-radius:6px;padding:1px 5px;margin-top:2px;cursor:pointer;font-size:.74rem;width:100%;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lh,.certs{display:none}
+@media(max-width:640px){main{padding:10px}.bars div.b{grid-template-columns:80px 1fr 40px}.seg button{padding:9px 12px}.cal .d{min-height:58px;font-size:.7rem}.chip{font-size:.62rem}}
+@media(max-width:640px){
+.tw table{min-width:0}.tw table tr:first-child{display:none}
+.tw table tr{display:block;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;padding:4px 8px}
+.tw table td{display:flex;justify-content:space-between;gap:8px;text-align:right;border:0;padding:3px 0}
+.tw table td::before{content:attr(data-l);color:var(--muted);font-size:.78rem;flex:none}
+.tw table td[colspan]::before,.tw table td[data-l=""]::before{content:none}
+.tw table .acts{justify-content:flex-start}
+}
+@media print{body{background:#fff;color:#000}header.top,nav,.bar,.acts,.seg,.noprint,footer.ft,#toast{display:none!important}.card{border:0;padding:0}table{min-width:0;font-size:9pt}.tw{overflow:visible}@page{size:A4 landscape;margin:10mm}
+.lh{display:block;text-align:center;border-bottom:2px solid #000;margin-bottom:10px;padding-bottom:6px}.lh b{font-size:14pt}
+body.pc>*:not(.certs){display:none!important}body.pc .certs{display:block}
+.cert{page-break-after:always;height:182mm;border:6px double #1e3a8a;padding:16mm;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:10mm;color:#000;font-size:15pt;line-height:2.2}
+.cert h1{font-size:26pt;margin:0;color:#1e3a8a}.cert h2{font-size:16pt;margin:0}.cert h3{font-size:13pt;margin:0}.cert .sg{align-self:flex-start;margin-top:12mm;font-size:12pt}}
+</style>
+</head>
+<body>
+<header class="top"><h1>سامانه مدیریت آموزش و امتیاز پرسنل <small>نسخه ۴٫۲</small></h1><small id="unitname"></small><div id="status" class="noprint"></div></header>
+<nav id="nav" class="noprint"></nav>
+<main id="app"></main>
+<footer class="ft">تهیه و تنظیم: <b>واحد آموزش بخش داخلی مردان</b></footer>
+<div id="toast"></div>
+<noscript>برای استفاده از این سامانه جاوااسکریپت باید فعال باشد.</noscript>
+<script>
+(()=>{
+'use strict';
+const KEY='personnelTraining_v3',PREV='personnelTraining_v3_prev',OLD='personnelClassScores_v2';
+const TYPES={general:'عمومی',semi:'نیمه‌تخصصی',specific:'تخصصی'},TK=Object.keys(TYPES);
+const MONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const WD=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+const $=s=>document.querySelector(s);
+const uid=()=>'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const FA='۰۱۲۳۴۵۶۷۸۹',AR='٠١٢٣٤٥٦٧٨٩';
+const fa=v=>String(v).replace(/\d/g,d=>FA[d]);
+const lat=s=>String(s??'').replace(/[۰-۹]/g,d=>FA.indexOf(d)).replace(/[٠-٩]/g,d=>AR.indexOf(d)).replace(/٫/g,'.');
+const num=v=>{const t=lat(v).trim();if(t==='')return NaN;const x=Number(t);return Number.isFinite(x)?x:NaN};
+const fmt=v=>fa(String(Math.round(v*100)/100));
+const norm=s=>String(s??'').replace(/ي/g,'ی').replace(/ك/g,'ک').replace(/\s+/g,' ').trim().toLocaleLowerCase('fa');
+const okScore=v=>v>=0&&v<=1000;
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+/* ---------- تقویم شمسی ---------- */
+const div=(a,b)=>~~(a/b),mod=(a,b)=>a-~~(a/b)*b;
+const BRK=[-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+function jalCal(jy){
+ const bl=BRK.length,gy=jy+621;let leapJ=-14,jp=BRK[0],jm,jump=0,leap,leapG,march,n,i;
+ if(jy<jp||jy>=BRK[bl-1])throw new Error('year');
+ for(i=1;i<bl;i++){jm=BRK[i];jump=jm-jp;if(jy<jm)break;leapJ=leapJ+div(jump,33)*8+div(mod(jump,33),4);jp=jm}
+ n=jy-jp;leapJ=leapJ+div(n,33)*8+div(mod(n,33)+3,4);
+ if(mod(jump,33)===4&&jump-n===4)leapJ+=1;
+ leapG=div(gy,4)-div((div(gy,100)+1)*3,4)-150;march=20+leapJ-leapG;
+ if(jump-n<6)n=n-jump+div(jump+4,33)*33;
+ leap=mod(mod(n+1,33)-1,4);if(leap===-1)leap=4;
+ return{leap,gy,march};
+}
+function g2d(gy,gm,gd){let d=div((gy+div(gm-8,6)+100100)*1461,4)+div(153*mod(gm+9,12)+2,5)+gd-34840408;return d-div(div(gy+100100+div(gm-8,6),100)*3,4)+752}
+function d2g(jdn){let j=4*jdn+139361631;j=j+div(div(4*jdn+183187720,146097)*3,4)*4-3908;const i=div(mod(j,1461),4)*5+308,gd=div(mod(i,153),5)+1,gm=mod(div(i,153),12)+1;return{gy:div(j,1461)-100100+div(8-gm,6),gm,gd}}
+function j2d(jy,jm,jd){const r=jalCal(jy);return g2d(r.gy,3,r.march)+(jm-1)*31-div(jm,7)*(jm-7)+jd-1}
+function d2j(jdn){const gy=d2g(jdn).gy;let jy=gy-621;const r=jalCal(jy),f=g2d(gy,3,r.march);let k=jdn-f,jm,jd;
+ if(k>=0){if(k<=185){return{jy,jm:1+div(k,31),jd:mod(k,31)+1}}k-=186}else{jy-=1;k+=179;if(r.leap===1)k+=1}
+ return{jy,jm:7+div(k,30),jd:mod(k,30)+1}}
+const monthLen=(y,m)=>m<=6?31:m<=11?30:(jalCal(y).leap===0?30:29);
+const pad2=n=>String(n).padStart(2,'0');
+const toJdn=s=>{const [y,m,d]=s.split('/').map(Number);return j2d(y,m,d)};
+const fromJdn=j=>{const r=d2j(j);return r.jy+'/'+pad2(r.jm)+'/'+pad2(r.jd)};
+const addDays=(s,n)=>fromJdn(toJdn(s)+n);
+function addMonths(s,n){const [y,m,d]=s.split('/').map(Number),t=y*12+(m-1)+n,ny=div(t,12),nm=mod(t,12)+1;return ny+'/'+pad2(nm)+'/'+pad2(Math.min(d,monthLen(ny,nm)))}
+const wdIdx=j=>mod(j+2,7);
+function normDate(s){
+ s=lat(s).trim();if(!s)return '';
+ const m=s.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);if(!m)return null;
+ const y=+m[1],mo=+m[2],d=+m[3];
+ if(y<1300||y>1500||mo<1||mo>12||d<1||d>monthLen(y,mo))return null;
+ return y+'/'+pad2(mo)+'/'+pad2(d);
+}
+const showDate=d=>d?fa(d):'بدون تاریخ';
+function today(){try{const p=new Intl.DateTimeFormat('en-u-ca-persian-nu-latn',{year:'numeric',month:'numeric',day:'numeric',timeZone:'Asia/Tehran'}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t)?.value;return normDate(g('year')+'/'+g('month')+'/'+g('day'))||''}catch(e){return ''}}
+
+/* ---------- داده ---------- */
+const DEFSET={unit:'واحد آموزش بخش داخلی مردان',org:'',operator:'',signer:'',signerTitle:'مسئول آموزش',lowRate:50};
+const mkSnap=c=>({type:c.type,score:c.score,rules:clone(c.rules||{}),valid:c.valid||0,hours:c.hours||0});
+let db,saveErr=false;
+const cls=id=>db.classes.find(c=>c.id===id),stf=id=>db.staff.find(p=>p.id===id),ses=id=>db.sessions.find(s=>s.id===id),grp=id=>db.groups.find(g=>g.id===id);
+const gname=id=>grp(id)?.name||'بدون گروه';
+const sname=s=>cls(s.classId)?.name||'؟';
+const resolve=(s,gid)=>{const gr=s.snap.rules?.[gid];return{t:gr&&gr.type?gr.type:s.snap.type,v:+(gr&&gr.score!==''&&gr.score!=null?gr.score:s.snap.score)}};
+const rec=(sid,pid)=>db.att[sid]?.[pid];
+const reqOf=(c,gid)=>{const r=c.rules?.[gid]?.req;return r==='y'?true:r==='n'?false:!!c.req};
+function logE(act,txt){(db.log??=[]).push({t:new Date().toISOString(),who:db.settings.operator||'',act,txt});if(db.log.length>3000)db.log.splice(0,db.log.length-3000)}
+function seed(){
+ const g=[['پرستار',30],['کمک‌پرستار',20],['ماما',30],['سایر',0]].map(([name,min])=>({id:uid(),name,min}));
+ const [pr,kp,ma]=g;
+ const c1={id:uid(),name:'CPR',code:'CLS-001',type:'specific',score:20,rules:{[kp.id]:{type:'general',score:10,req:''},[ma.id]:{type:'semi',score:15,req:''}},active:true,note:'',req:true,valid:12};
+ const c2={id:uid(),name:'تنفس',code:'CLS-002',type:'semi',score:15,rules:{[pr.id]:{type:'specific',score:'',req:''}},active:true,note:'',req:false,valid:0};
+ const c3={id:uid(),name:'اخلاق',code:'CLS-003',type:'general',score:10,rules:{},active:true,note:'',req:false,valid:0};
+ const d=today();
+ return{version:4,groups:g,classes:[c1,c2,c3],sessions:[c1,c2,c3].map(c=>({id:uid(),classId:c.id,date:d,instructor:'',note:'',snap:mkSnap(c)})),
+  staff:[['علی',pr],['محمد',kp],['حسن',ma],['حسین',pr]].map(([name,gg])=>({id:uid(),name,code:'',groupId:gg.id,active:true})),att:{},log:[],settings:{...DEFSET},meta:{sample:true,lastBackup:'',dirty:0}};
+}
+function normalizeDb(raw){
+ if(!raw||typeof raw!=='object'||!Array.isArray(raw.classes)||!Array.isArray(raw.sessions)||!Array.isArray(raw.staff))throw new Error('ساختار فایل معتبر نیست.');
+ const v=raw.version;
+ if(v===3||v===4)return fromV3(raw,[]);
+ if(v===undefined||v===2){const res=fromV2(raw,[]);(res.warnings.conf||[]).forEach(t=>res.db.log.push({t:new Date().toISOString(),who:'سیستم',act:'تعارض',txt:t}));return res}
+ throw new Error('شماره نسخه پشتیبان ('+String(v)+') ناشناخته است و فایل رد شد؛ برای بازیابی از نسخه‌ی جدیدتر برنامه استفاده کنید.');
+}
+function cleanRules(r,gids){const o={};for(const [gid,v] of Object.entries(r||{})){if(!gids.has(gid))continue;const t=TK.includes(v?.type)?v.type:'';let s=(v?.score===''||v?.score==null)?'':num(v.score);if(s!==''&&!okScore(s))s='';const rq=v?.req==='y'||v?.req==='n'?v.req:'';if(t||s!==''||rq)o[gid]={type:t,score:s,req:rq}}return o}
+const validNum=v=>{const x=num(v);return Number.isFinite(x)&&x>=0&&x<=120?Math.round(x):0};
+const hrs=v=>{const x=num(v);return Number.isFinite(x)&&x>=0&&x<=1000?x:0};
+const hasHours=()=>db.classes.some(c=>c.hours>0);
+const todayC=()=>{const n=Date.now();if(!todayC.c||n-todayC.t>30000){todayC.c=today();todayC.t=n}return todayC.c};
+const effStatus=s=>{if(s.status==='canceled')return 'canceled';const t=todayC();return s.date&&t&&s.date>t?'planned':'held'};
+const isHeld=s=>effStatus(s)==='held';
+const STS={held:'برگزارشده',planned:'برنامه‌ریزی‌شده',canceled:'لغوشده'};
+const gOf=(r,pid,f)=>f&&f.gmode==='cur'?(stf(pid)?.groupId||''):(r.s==='p'?r.g:(r.g||stf(pid)?.groupId||''));
+function blocks(x,s){ // آیا حضور قبلی x مانع امتیاز دوباره در s است؟
+ const [a,b]=(!x.date||!s.date||x.date<=s.date)?[x,s]:[s,x],v=a.snap?.valid||0;
+ if(!v||!a.date||!b.date)return true;return b.date<=addMonths(a.date,v);
+}
+function fromV3(r,w){
+ const groups=[],gids=new Set();
+ for(const g of r.groups||[]){const name=String(g?.name??'').trim(),id=String(g?.id??'');if(!name||!id||gids.has(id))throw new Error('گروه شغلی نامعتبر یا تکراری در فایل وجود دارد.');const mn=num(g.min);gids.add(id);groups.push({id,name,min:okScore(mn)?mn:0})}
+ const classes=[],cids=new Set(),names=new Set(),codes=new Set();
+ for(const c of r.classes){
+  const id=String(c?.id??''),name=String(c?.name??'').trim(),code=String(c?.code??'').trim(),score=num(c?.score);
+  if(!id||cids.has(id))throw new Error('شناسه کلاس نامعتبر یا تکراری است.');
+  if(!name)throw new Error('کلاسی بدون نام در فایل وجود دارد.');
+  if(names.has(norm(name)))throw new Error('نام کلاس «'+name+'» تکراری است.');
+  if(!code||codes.has(norm(code)))throw new Error('کد کلاس «'+name+'» خالی یا تکراری است.');
+  if(!okScore(score))throw new Error('امتیاز کلاس «'+name+'» نامعتبر است.');
+  cids.add(id);names.add(norm(name));codes.add(norm(code));
+  classes.push({id,name,code,type:TK.includes(c.type)?c.type:'general',score,rules:cleanRules(c.rules,gids),active:c.active!==false,note:String(c.note??''),req:!!c.req,valid:validNum(c.valid),hours:hrs(c.hours)});
+ }
+ const sessions=[],sids=new Set();
+ for(const s of r.sessions){
+  const id=String(s?.id??''),c=classes.find(x=>x.id===s?.classId);
+  if(!id||sids.has(id))throw new Error('شناسه نوبت نامعتبر یا تکراری است.');
+  if(!c)throw new Error('یکی از نوبت‌ها به کلاس ناموجود اشاره می‌کند.');
+  sids.add(id);let d=normDate(s.date);if(d===null){w.push('تاریخ نامعتبر پاک شد.');d=''}
+  let snap=mkSnap(c);
+  if(s.snap&&TK.includes(s.snap.type)&&okScore(num(s.snap.score)))snap={type:s.snap.type,score:num(s.snap.score),rules:cleanRules(s.snap.rules,gids),valid:validNum(s.snap.valid),hours:hrs(s.snap.hours)};
+  sessions.push({id,classId:c.id,date:d,instructor:String(s.instructor??''),note:String(s.note??''),snap,status:s.status==='canceled'?'canceled':'auto'});
+ }
+ const staff=[],pids=new Set();
+ for(const p of r.staff){
+  const id=String(p?.id??''),name=String(p?.name??'').trim();
+  if(!id||pids.has(id))throw new Error('شناسه پرسنل نامعتبر یا تکراری است.');
+  if(!name)throw new Error('پرسنلی بدون نام در فایل وجود دارد.');
+  pids.add(id);staff.push({id,name,code:String(p.code??'').trim(),groupId:gids.has(p.groupId)?p.groupId:'',active:p.active!==false,gh:(Array.isArray(p.gh)?p.gh:[]).filter(h=>h&&h.d).map(h=>({d:String(h.d),from:gids.has(h.from)?h.from:'',to:gids.has(h.to)?h.to:''}))});
+ }
+ const att={},kept={},conf=[];
+ [...sessions].sort((a,b)=>(a.date||'~').localeCompare(b.date||'~')).forEach(s=>{
+  for(const p of staff){
+   const x=r.att?.[s.id]?.[p.id];if(!x)continue;
+   if(x.s==='a'){(att[s.id]??={})[p.id]={s:'a',g:gids.has(x.g)?x.g:p.groupId,r:String(x.r??''),c:String(x.c??'')};continue}
+   if(x.s!=='p')continue;
+   const k=s.classId+'|'+p.id;
+   if((kept[k]||[]).some(o=>blocks(o,s))){w.push('حضور تکراری کنار گذاشته شد (در تاریخچه ثبت شد).');conf.push({s,p,x});continue}
+   (kept[k]??=[]).push(s);
+   const df=resolve(s,p.groupId),v=num(x.v);
+   (att[s.id]??={})[p.id]={s:'p',t:TK.includes(x.t)?x.t:df.t,v:okScore(v)?v:df.v,g:gids.has(x.g)?x.g:'',m:x.m?1:0,n:String(x.n??''),c:String(x.c??'')};
+  }
+ });
+ const st=r.settings||{},low=num(st.lowRate);
+ const settings={unit:String(st.unit??DEFSET.unit),org:String(st.org??''),operator:String(st.operator??''),signer:String(st.signer??''),signerTitle:String(st.signerTitle??DEFSET.signerTitle),lowRate:low>=1&&low<=100?low:50};
+ const log=(Array.isArray(r.log)?r.log:[]).filter(e=>e&&e.t).map(e=>({t:String(e.t),who:String(e.who??''),act:String(e.act??''),txt:String(e.txt??'')})).slice(-3000);
+ conf.forEach(c=>log.push({t:new Date().toISOString(),who:'سیستم',act:'تعارض',txt:'حضور تکراری کنار گذاشته شد: '+c.p.name+' / '+(classes.find(cc=>cc.id===c.s.classId)?.name||'؟')+' / '+(c.s.date||'بدون تاریخ')+' (نوع '+(TYPES[c.x.t]||'؟')+'، امتیاز '+String(c.x.v)+')'}));
+ return{db:{version:4,groups,classes,sessions,staff,att,log,settings,meta:{sample:false,lastBackup:String(r.meta?.lastBackup||''),dirty:Number(r.meta?.dirty)||0}},warnings:w};
+}
+function fromV2(r,w){
+ const groups=['پرستار','کمک‌پرستار','ماما','سایر'].map(name=>({id:uid(),name,min:0})),classes=[],byName=new Map(),codes=new Set();
+ r.classes.forEach(c=>{
+  const name=String(c?.name??'').trim();if(!name){w.push('کلاس بدون نام نادیده گرفته شد.');return}
+  if(byName.has(norm(name))){w.push('کلاس تکراری «'+name+'» ادغام شد.');return}
+  let code=String(c.code||'').trim(),i=classes.length+1;
+  while(!code||codes.has(norm(code)))code='CLS-'+String(i++).padStart(3,'0');
+  codes.add(norm(code));const sc=num(c.score);
+  const cl={id:uid(),name,code,type:c.type==='اختصاصی'?'specific':'general',score:okScore(sc)?sc:0,rules:{},active:true,note:'',req:false,valid:0};
+  classes.push(cl);byName.set(norm(name),cl);
+ });
+ const sessions=[],idx=[];
+ r.sessions.forEach(s=>{
+  const cl=byName.get(norm(s?.className));if(!cl){w.push('نوبتی با کلاس نامشخص نادیده گرفته شد.');idx.push(null);return}
+  let d=normDate(s.date);if(d===null){w.push('تاریخ نامعتبر پاک شد.');d=''}
+  const se={id:uid(),classId:cl.id,date:d,instructor:'',note:'',snap:mkSnap(cl)};sessions.push(se);idx.push(se);
+ });
+ const staff=[],att={},seen=new Set();
+ r.staff.forEach(p=>{
+  const name=String(p?.name??'').trim();if(!name){w.push('پرسنل بدون نام نادیده گرفته شد.');return}
+  const np={id:uid(),name,code:'',groupId:'',active:true};staff.push(np);
+  (p.attended||[]).forEach((v,i)=>{const se=idx[i];if(!v||!se)return;const k=se.classId+'|'+np.id;if(seen.has(k)){w.push('حضور تکراری کنار گذاشته شد (در تاریخچه ثبت شد).');(w.conf??=[]).push('حضور تکراری کنار گذاشته شد: '+np.name+' / '+(classes.find(cc=>cc.id===se.classId)?.name||'؟')+' / '+(se.date||'بدون تاریخ'));return}seen.add(k);
+   (att[se.id]??={})[np.id]={s:'p',t:se.snap.type,v:se.snap.score,g:'',m:0,n:''}});
+ });
+ return{db:{version:4,groups,classes,sessions,staff,att,log:[],settings:{...DEFSET},meta:{sample:false,lastBackup:'',dirty:1}},warnings:w};
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(db));saveErr=false}catch(e){saveErr=true}}
+function commit(){db.meta.dirty=(db.meta.dirty||0)+1;db.meta.sample=false;persist()}
+let loadMsg='';
+function load(){
+ let raw=null;
+ try{raw=localStorage.getItem(KEY);if(raw){db=normalizeDb(JSON.parse(raw)).db;return}}
+ catch(e){try{localStorage.setItem(KEY+'_corrupt',raw)}catch(_){}loadMsg='اطلاعات ذخیره‌شده خراب بود و یک کپی از آن نگهداری شد؛ با نمونه شروع شد.'}
+ try{const o=localStorage.getItem(OLD);if(o){const res=normalizeDb(JSON.parse(o));db=res.db;loadMsg='اطلاعات نسخه قبلی منتقل شد.'+(res.warnings.length?' ('+fa(res.warnings.length)+' هشدار)':'');persist();return}}catch(e){}
+ db=seed();persist();
+}
+
+/* ---------- محاسبات ---------- */
+const inRange=(s,f)=>!((f.from&&(!s.date||s.date<f.from))||(f.to&&(!s.date||s.date>f.to)));
+function pts(p,f={}){
+ const o={general:0,semi:0,specific:0,total:0,validTotal:0,count:0,distinct:0,hours:0,items:[]},t=todayC(),dis=new Set();
+ for(const s of db.sessions){
+  const r=rec(s.id,p.id);if(!r||r.s!=='p'||!isHeld(s))continue;
+  if(f.classId&&s.classId!==f.classId)continue;if(!inRange(s,f))continue;
+  if(f.groupId&&gOf(r,p.id,f)!==f.groupId)continue;
+  o[r.t]+=r.v;o.total+=r.v;o.count++;o.hours+=s.snap.hours||0;dis.add(s.classId);
+  const v=s.snap.valid||0;if(!v||!s.date||!t||addMonths(s.date,v)>=t)o.validTotal+=r.v;
+  o.items.push({s,r});
+ }
+ o.distinct=dis.size;
+ o.items.sort((a,b)=>(b.s.date||'').localeCompare(a.s.date||''));return o;
+}
+function ranking(f={},all=false){
+ const rows=db.staff.map(p=>({p,...pts(p,f)})).filter(r=>(all||r.p.active||r.count>0)&&(!f.groupId||r.count>0));
+ const key=({valid:'validTotal',sessions:'count',courses:'distinct'})[f.sort]||'total';
+ rows.sort((a,b)=>b[key]-a[key]||b.total-a.total||a.p.name.localeCompare(b.p.name,'fa'));
+ rows.forEach((r,i)=>r.rank=i&&rows[i-1][key]===r[key]?rows[i-1].rank:i+1);return rows;
+}
+function earlier(pid,sid){const s=ses(sid);return db.sessions.find(x=>x.id!==sid&&x.classId===s.classId&&rec(x.id,pid)?.s==='p'&&isHeld(x)&&blocks(x,s))}
+function setAtt(sid,pid,st){
+ const a=db.att[sid]??={};
+ if(!st)delete a[pid];else if(st==='a')a[pid]={s:'a',g:stf(pid)?.groupId||'',r:'',c:''};
+ else{const s=ses(sid),p=stf(pid),r=resolve(s,p.groupId);a[pid]={s:'p',t:r.t,v:r.v,g:p.groupId,m:0,n:'',c:''}}
+ if(!Object.keys(a).length)delete db.att[sid];
+}
+const sortedSessions=()=>[...db.sessions].sort((a,b)=>{if(!a.date!==!b.date)return a.date?1:-1;return (b.date||'').localeCompare(a.date||'')||sname(a).localeCompare(sname(b),'fa')});
+function classSummary(f){
+ return db.classes.filter(c=>!f.classId||c.id===f.classId).map(c=>{
+  const ss=db.sessions.filter(s=>s.classId===c.id&&inRange(s,f)&&isHeld(s));let p=0,a=0,pt=0;
+  for(const s of ss)for(const [pid,r] of Object.entries(db.att[s.id]||{})){if(!stf(pid))continue;
+   if(f.groupId&&gOf(r,pid,f)!==f.groupId)continue;
+   if(r.s==='p'){p++;pt+=r.v}else a++}
+  return{c,sessions:ss.length,p,a,pt};
+ });
+}
+function groupSummary(f){
+ return [...db.groups.map(g=>g.id),''].filter(g=>!f.groupId||g===f.groupId).map(g=>{
+  const o={g,staff:new Set(),count:0,general:0,semi:0,specific:0,total:0};
+  for(const s of db.sessions){if(f.classId&&s.classId!==f.classId)continue;if(!inRange(s,f)||!isHeld(s))continue;
+   for(const [pid,r] of Object.entries(db.att[s.id]||{})){if(r.s!=='p'||!stf(pid)||gOf(r,pid,f)!==g)continue;o.staff.add(pid);o.count++;o[r.t]+=r.v;o.total+=r.v}}
+  return o;
+ }).filter(o=>o.g!==''||o.count>0);
+}
+function aggregate(f){
+ const o={sessions:0,p:0,a:0,general:0,semi:0,specific:0,total:0,hours:0};
+ for(const s of db.sessions){if(f.classId&&s.classId!==f.classId)continue;if(!inRange(s,f)||!isHeld(s))continue;o.sessions++;
+  for(const [pid,r] of Object.entries(db.att[s.id]||{})){if(!stf(pid))continue;
+   if(f.groupId&&gOf(r,pid,f)!==f.groupId)continue;
+   if(r.s==='p'){o.p++;o[r.t]+=r.v;o.total+=r.v;o.hours+=s.snap.hours||0}else o.a++}}
+ return o;
+}
+const curYear=()=>{const t=today();return t?+t.slice(0,4):1405};
+const yearPeriod=y=>({from:y+'/01/01',to:y+'/12/31'});
+function statusOf(p,c){
+ const its=db.sessions.filter(s=>s.classId===c.id&&isHeld(s)&&rec(s.id,p.id)?.s==='p').sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ if(!its.length)return{st:'missing'};
+ const s=its[0],v=s.snap.valid||0,t=todayC();
+ if(!v||!s.date||!t)return{st:'ok',s};
+ const ex=addMonths(s.date,v);
+ if(ex<t)return{st:'expired',s,ex};
+ if(ex<=addDays(t,60))return{st:'expiring',s,ex};
+ return{st:'ok',s,ex};
+}
+const STL={ok:'معتبر',expiring:'نزدیک انقضا',expired:'منقضی',missing:'نگذرانده'};
+function complianceRows(){
+ return db.staff.filter(p=>p.active).map(p=>{
+  const req=db.classes.filter(c=>c.active&&reqOf(c,p.groupId)),o={p,req:req.length,ok:0,missing:[],expired:[],expiring:[]};
+  for(const c of req){const st=statusOf(p,c);
+   if(st.st==='missing')o.missing.push(c.name);else if(st.st==='expired')o.expired.push(c.name+' ('+st.ex+')');
+   else{o.ok++;if(st.st==='expiring')o.expiring.push(c.name+' ('+st.ex+')')}}
+  return o;
+ }).filter(o=>o.req>0);
+}
+function deficitRows(per){
+ return db.staff.filter(p=>p.active&&(grp(p.groupId)?.min||0)>0).map(p=>{const min=grp(p.groupId).min,e=pts(p,per).total;return{p,min,e,short:Math.max(0,min-e)}}).sort((a,b)=>b.short-a.short);
+}
+function analysis(per){
+ const held=new Set(db.sessions.filter(s=>inRange(s,per)&&isHeld(s)).map(s=>s.classId)),low=db.settings.lowRate||50;
+ return db.staff.filter(p=>p.active).map(p=>{
+  const got=new Set(pts(p,per).items.map(i=>i.s.classId));let a=0;held.forEach(c=>{if(got.has(c))a++});
+  const rate=held.size?Math.round(a/held.size*100):100;
+  return{p,held:held.size,att:a,rate,cat:held.size&&a===0?'none':rate<low?'low':'active'};
+ }).sort((a,b)=>a.rate-b.rate);
+}
+const CATL={none:'بدون آموزش',low:'کم‌فعال / نیازمند آموزش',active:'فعال'};
+
+/* ---------- ui ---------- */
+const ui={view:'dash',sid:'',q:'',gf:'',inactive:false,cf:'',rtab:'rank',cal:null,rep:{from:'',to:'',classId:'',groupId:'',pid:'',year:'',gmode:'hist',sort:'total'}};
+const NAV=[['dash','داشبورد'],['attend','ثبت حضور'],['calendar','تقویم'],['sessions','نوبت‌ها'],['classes','کلاس‌ها و قوانین'],['staff','پرسنل'],['reports','گزارش‌ها'],['log','تاریخچه'],['backup','تنظیمات و پشتیبان']];
+const bdg=t=>'<span class="bd '+t+'">'+TYPES[t]+'</span>';
+const opts=(arr,sel)=>arr.map(([v,l])=>'<option value="'+esc(v)+'"'+(v===sel?' selected':'')+'>'+esc(l)+'</option>').join('');
+const typeOpts=(sel,first)=>(first?'<option value="">'+first+'</option>':'')+TK.map(t=>'<option value="'+t+'"'+(t===sel?' selected':'')+'>'+TYPES[t]+'</option>').join('');
+const empty=(m,act,l)=>'<div class="card empty">'+m+(act?'<br><br><button class="btn pri" data-act="'+act+'">'+l+'</button>':'')+'</div>';
+let tt;function toast(m,k){if(saveErr&&k!=='bad'){m='⚠ ذخیره در مرورگر انجام نشد؛ فوراً پشتیبان JSON بگیرید.';k='bad'}const t=$('#toast');t.textContent=m;t.className=k||'';t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',3800)}
+function closeModal(){document.querySelector('.ov')?.remove()}
+function openModal(title,body,onSave,o={}){
+ closeModal();
+ const ov=document.createElement('div');ov.className='ov';
+ ov.innerHTML='<form class="modal'+(o.wide?' wide':'')+'" novalidate><header><h3>'+title+'</h3><button type="button" class="x" data-close aria-label="بستن">×</button></header><div class="mb">'+body+'</div><div class="err" role="alert"></div><footer>'+(onSave?'<button class="btn pri" type="submit">'+(o.label||'ذخیره')+'</button>':'')+'<button type="button" class="btn" data-close>'+(onSave?'انصراف':'بستن')+'</button></footer></form>';
+ document.body.appendChild(ov);
+ labelTables(ov);const f=ov.querySelector('form');
+ f.addEventListener('submit',e=>{e.preventDefault();if(!onSave)return;const r=onSave(new FormData(f));if(typeof r==='string')ov.querySelector('.err').textContent=r;else closeModal()});
+ f.querySelector('input:not([type=checkbox]),select')?.focus();return f;
+}
+function labelTables(root){try{root?.querySelectorAll?.('table')?.forEach(tb=>{const rows=[...tb.rows];if(!rows.length)return;const hs=[...rows[0].cells].map(c=>c.textContent.trim());rows.slice(1).forEach(r=>[...r.cells].forEach((c,i)=>c.setAttribute('data-l',hs[i]||'')))})}catch(e){}}
+const dl=(blob,name)=>{if(window.AndroidBridge){const fr=new FileReader();fr.onload=()=>window.AndroidBridge.save(name,blob.type||'application/octet-stream',String(fr.result).split(',')[1]||'');fr.readAsDataURL(blob);return}const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)};
+const csvCell=v=>{let s=String(v??'');if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+const csv=rows=>'﻿'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n');
+function fdate(iso){try{return new Intl.DateTimeFormat('fa-IR-u-ca-persian',{dateStyle:'medium',timeStyle:'short'}).format(new Date(iso))}catch(e){return iso}}
+const lg=(s,p)=>p.name+' / '+sname(s)+' / '+(s.date||'بدون تاریخ');
+
+/* ---------- گزارش‌ها (داده مشترک برای نمایش، CSV، Excel و چاپ) ---------- */
+const RTABS=[['rank','رتبه‌بندی و گروه‌ها'],['person','گزارش فردی'],['monthly','ماهانه'],['yearly','سالانه'],['deficit','کسری امتیاز'],['compliance','اجباری‌ها و بازآموزی'],['absence','غیبت‌ها'],['expiry','انقضای دوره‌ها'],['transfers','انتقال گروه'],['analysis','تحلیل عملکرد']];
+function repData(){
+ const f=ui.rep,tab=ui.rtab,fil={from:f.from,to:f.to,classId:f.classId,groupId:f.groupId,gmode:f.gmode,sort:f.sort},T=[];
+ const per=()=>({from:f.from||yearPeriod(curYear()).from,to:f.to||yearPeriod(curYear()).to});
+ if(tab==='rank'){
+  T.push({name:'خلاصه به تفکیک گروه شغلی ('+(fil.gmode==='cur'?'بر اساس گروه فعلی':'بر اساس گروه زمان ثبت')+')',head:['گروه','نفر','حضور','عمومی','نیمه‌تخصصی','تخصصی','جمع'],rows:groupSummary(fil).map(o=>[gname(o.g),o.staff.size,o.count,o.general,o.semi,o.specific,o.total])});
+  T.push({name:'رتبه‌بندی پرسنل',head:['رتبه','نام','گروه فعلی','عمومی','نیمه‌تخصصی','تخصصی','جمع (تاریخی)','امتیاز معتبر','نوبت حضور','دوره متفاوت',...(hasHours()?['ساعت آموزشی']:[])],rows:ranking(fil).map(r=>[r.rank,r.p.name,gname(r.p.groupId),r.general,r.semi,r.specific,r.total,r.validTotal,r.count,r.distinct,...(hasHours()?[r.hours]:[])])});
+  T.push({name:'گزارش کلاس‌ها (شرکت‌کنندگان و غایبان)',head:['کلاس','نوبت','حضور','غیبت','امتیاز اعطاشده'],rows:classSummary(fil).map(o=>[o.c.name,o.sessions,o.p,o.a,o.pt])});
+ }else if(tab==='person'){
+  const p=stf(f.pid);
+  if(!p)return[{name:'گزارش فردی',head:[],rows:[],msg:'یک نفر را انتخاب کنید.'}];
+  const r=pts(p,fil);
+  T.push({name:'سوابق «'+p.name+'» — گروه فعلی: '+gname(p.groupId),head:['تاریخ','کلاس','گروه زمان ثبت','نوع','امتیاز','دستی','علت','توضیح'],rows:r.items.map(i=>[i.s.date||'بدون تاریخ',sname(i.s),gname(i.r.g),TYPES[i.r.t],i.r.v,i.r.m?'بله':'',i.r.n||'',i.r.c||''])});
+  T.push({name:'جمع‌بندی',head:['عمومی','نیمه‌تخصصی','تخصصی','جمع (تاریخی)','امتیاز معتبر','نوبت حضور','دوره متفاوت',...(hasHours()?['ساعت آموزشی']:[])],rows:[[r.general,r.semi,r.specific,r.total,r.validTotal,r.count,r.distinct,...(hasHours()?[r.hours]:[])]]});
+  const ab=sortedSessions().filter(s=>rec(s.id,p.id)?.s==='a'&&inRange(s,fil)&&(!fil.classId||s.classId===fil.classId));
+  if(ab.length)T.push({name:'غیبت‌ها',head:['تاریخ','کلاس','علت','توضیح'],rows:ab.map(s=>{const x=rec(s.id,p.id);return[s.date||'بدون تاریخ',sname(s),x.r||'—',x.c||'']})});
+  const rq=db.classes.filter(c=>c.active&&reqOf(c,p.groupId));
+  if(rq.length)T.push({name:'کلاس‌های اجباری',head:['کلاس','وضعیت','آخرین شرکت','انقضا'],rows:rq.map(c=>{const s=statusOf(p,c);return[c.name,STL[s.st],s.s?.date||'—',s.ex||'—']})});
+ }else if(tab==='monthly'){
+  const y=+lat(f.year)||curYear(),rows=[];
+  for(let m=1;m<=12;m++){const a=aggregate({...fil,from:y+'/'+pad2(m)+'/01',to:y+'/'+pad2(m)+'/31'});rows.push([MONTHS[m-1],a.sessions,a.p,a.a,a.general,a.semi,a.specific,a.total,...(hasHours()?[a.hours]:[])])}
+  const sum=rows.reduce((s,r)=>s.map((v,i)=>i?v+r[i]:v),['جمع سال',0,0,0,0,0,0,0,...(hasHours()?[0]:[])]);
+  T.push({name:'گزارش ماهانه سال '+y,head:['ماه','نوبت','حضور','غیبت','عمومی','نیمه‌تخصصی','تخصصی','جمع امتیاز',...(hasHours()?['ساعت آموزشی (نفر-ساعت)']:[])],rows:[...rows,sum]});
+ }else if(tab==='yearly'){
+  const ys=[...new Set(db.sessions.filter(s=>s.date).map(s=>s.date.slice(0,4)))].sort();
+  T.push({name:'گزارش سالانه',head:['سال','نوبت','حضور','غیبت','عمومی','نیمه‌تخصصی','تخصصی','جمع امتیاز',...(hasHours()?['ساعت آموزشی (نفر-ساعت)']:[])],rows:ys.map(y=>{const a=aggregate({...fil,...yearPeriod(y)});return[y,a.sessions,a.p,a.a,a.general,a.semi,a.specific,a.total,...(hasHours()?[a.hours]:[])]})});
+ }else if(tab==='deficit'){
+  const pr=per(),rows=deficitRows(pr);
+  T.push({name:'کسری امتیاز از '+pr.from+' تا '+pr.to+' (حداقل امتیاز هر گروه در «گروه‌های شغلی» تعریف می‌شود)',head:['نام','گروه','امتیاز کسب‌شده','حداقل لازم','کسری','وضعیت'],rows:rows.filter(r=>!f.groupId||r.p.groupId===f.groupId).map(r=>[r.p.name,gname(r.p.groupId),r.e,r.min,r.short,r.short>0?'دارای کسری':'کامل'])});
+ }else if(tab==='compliance'){
+  T.push({name:'وضعیت کلاس‌های اجباری و بازآموزی (پرسنل فعال)',head:['نام','گروه','اجباری','معتبر','نگذرانده','منقضی','نزدیک انقضا (۶۰ روز)'],rows:complianceRows().filter(o=>!f.groupId||o.p.groupId===f.groupId).map(o=>[o.p.name,gname(o.p.groupId),o.req,o.ok,o.missing.join('، ')||'—',o.expired.join('، ')||'—',o.expiring.join('، ')||'—'])});
+ }else if(tab==='absence'){
+  const rows=[],cnt={};
+  for(const s of sortedSessions()){
+   if(f.classId&&s.classId!==f.classId)continue;if(!inRange(s,fil))continue;
+   for(const [pid,r] of Object.entries(db.att[s.id]||{})){
+    const p=stf(pid);if(!p||r.s!=='a')continue;const g=r.g||p.groupId;
+    if(f.groupId&&g!==f.groupId)continue;
+    rows.push([s.date||'بدون تاریخ',sname(s),p.name,gname(g),r.r||'—',r.c||'']);const k=r.r||'ثبت نشده';cnt[k]=(cnt[k]||0)+1;
+   }
+  }
+  T.push({name:'فهرست غیبت‌ها',head:['تاریخ','کلاس','نام','گروه','علت','توضیح'],rows});
+  T.push({name:'جمع‌بندی علت غیبت',head:['علت','تعداد'],rows:Object.entries(cnt).sort((a,b)=>b[1]-a[1])});
+ }else if(tab==='expiry'){
+  const rows=[];
+  for(const p of db.staff){if(!p.active||(f.groupId&&p.groupId!==f.groupId))continue;
+   for(const c of db.classes){if(!c.active||!c.valid||(f.classId&&c.id!==f.classId))continue;
+    const st=statusOf(p,c);if(st.st!=='expired'&&st.st!=='expiring')continue;
+    rows.push([p.name,gname(p.groupId),c.name,st.s?.date||'—',st.ex||'—',STL[st.st]+(reqOf(c,p.groupId)?' (اجباری)':'')])}}
+  rows.sort((a,b)=>String(a[4]).localeCompare(String(b[4])));
+  T.push({name:'دوره‌های منقضی و نزدیک انقضا (۶۰ روز) — پرسنل فعال، گروه فعلی',head:['نام','گروه','دوره','آخرین شرکت','تاریخ انقضا','وضعیت'],rows});
+ }else if(tab==='transfers'){
+  const rows=[];for(const p of db.staff)for(const h of (p.gh||[]))rows.push([h.d||'—',p.name,gname(h.from),gname(h.to)]);
+  rows.sort((a,b)=>String(b[0]).localeCompare(String(a[0])));
+  T.push({name:'سوابق انتقال پرسنل بین گروه‌ها (از زمان ثبت در این نسخه به بعد)',head:['تاریخ','نام','از گروه','به گروه'],rows});
+ }else if(tab==='analysis'){
+  const pr=per();
+  T.push({name:'تحلیل عملکرد آموزشی از '+pr.from+' تا '+pr.to+' (آستانه کم‌فعالی: '+(db.settings.lowRate||50)+'٪)',head:['نام','گروه','کلاس‌های برگزارشده','شرکت‌کرده','درصد مشارکت','وضعیت'],rows:analysis(pr).filter(a=>!f.groupId||a.p.groupId===f.groupId).map(a=>[a.p.name,gname(a.p.groupId),a.held,a.att,a.rate,CATL[a.cat]])});
+ }
+ return T;
+}
+const cellH=v=>typeof v==='number'?fmt(v):esc(fa(v??''));
+const tblHtml=t=>'<h2 style="margin-top:14px">'+esc(t.name)+'</h2>'+(t.msg?'<p class="muted">'+t.msg+'</p>':'<div class="tw"><table><tr>'+t.head.map((h,i)=>'<th'+(i?'':' class="l"')+'>'+esc(h)+'</th>').join('')+'</tr>'+(t.rows.map(r=>'<tr>'+r.map((v,i)=>'<td'+(typeof v==='string'&&i===(t.head[0]==='رتبه'?1:0)?' class="l"':'')+'>'+cellH(v)+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="'+t.head.length+'" class="muted">داده‌ای نیست</td></tr>')+'</table></div>');
+function exportRep(kind){
+ const T=repData().filter(t=>t.head.length),base='گزارش_'+ui.rtab;
+ if(!T.length){toast('گزارشی برای خروجی نیست.','bad');return}
+ if(kind==='csv'){const rows=[];T.forEach(t=>{rows.push([t.name]);rows.push(t.head);t.rows.forEach(r=>rows.push(r));rows.push([])});dl(new Blob([csv(rows)],{type:'text/csv;charset=utf-8'}),base+'.csv')}
+ else{const h='<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"></head><body dir="rtl">'+T.map(t=>'<h3>'+esc(t.name)+'</h3><table border="1"><tr>'+t.head.map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr>'+t.rows.map(r=>'<tr>'+r.map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')+'</table><br>').join('')+'</body></html>';
+  dl(new Blob(['﻿'+h],{type:'application/vnd.ms-excel;charset=utf-8'}),base+'.xls')}
+}
+
+/* ---------- نماها ---------- */
+const lh=t=>'<div class="lh"><b>'+esc(db.settings.org||'')+'</b><br>'+esc(db.settings.unit)+' — '+esc(t)+'<br><small>تاریخ گزارش: '+showDate(today())+'</small></div>';
+const views={
+dash(){
+ const t=today(),per=yearPeriod(curYear()),rk=ranking();let pres=0,absn=0,g=0,m=0,sp=0;const part=new Set();
+ for(const s of db.sessions)if(isHeld(s))for(const [pid,r] of Object.entries(db.att[s.id]||{})){if(r.s==='p'){pres++;part.add(pid)}else absn++}
+ rk.forEach(r=>{g+=r.general;m+=r.semi;sp+=r.specific});
+ const nodate=db.sessions.filter(s=>!s.date).length,top=rk.slice(0,8),mx=Math.max(1,...top.map(r=>r.total));
+ const held=db.sessions.filter(isHeld).length,heldCls=new Set(db.sessions.filter(isHeld).map(s=>s.classId)).size;
+ const up=db.sessions.filter(s=>s.date&&t&&s.date>t&&s.status!=='canceled').sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+ const comp=complianceRows(),nExp=comp.filter(o=>o.expired.length).length,nMis=comp.filter(o=>o.missing.length).length,nSoon=comp.filter(o=>o.expiring.length).length;
+ const def=deficitRows(per).filter(x=>x.short>0),an=analysis(per).filter(a=>a.cat!=='active').slice(0,8);
+ const banner=db.meta.sample?'<div class="banner">اطلاعات فعلی <b>نمونه</b> است. برای شروع واقعی «شروع با اطلاعات خالی» را بزنید.<br><button class="btn sm" data-act="resetEmpty">شروع با اطلاعات خالی</button></div>':'';
+ const al=[];if(nodate)al.push(fa(nodate)+' نوبت بدون تاریخ دارید.');if(!db.groups.length)al.push('هنوز گروه شغلی تعریف نشده است.');
+ if(!db.meta.lastBackup&&db.staff.length)al.push('هنوز پشتیبان نگرفته‌اید؛ از بخش «تنظیمات و پشتیبان» پشتیبان JSON بگیرید.');
+ return banner+(al.length?'<div class="banner">'+al.join('<br>')+'</div>':'')+
+ '<div class="card"><div class="bar"><b>دسترسی سریع</b><button class="btn pri" data-act="goAttend">ثبت سریع حضور</button><button class="btn" data-act="sesNew">ثبت نوبت جدید</button><button class="btn" data-act="staffNew">ثبت پرسنل جدید</button><button class="btn" data-act="goRep" data-t="rank">گزارش مدیریتی</button></div></div>'+
+ '<div class="card"><div class="grid"><div class="m"><b>'+fa(db.staff.filter(p=>p.active).length)+'</b><span>پرسنل فعال</span></div><div class="m"><b>'+fa(db.classes.filter(c=>c.active).length)+'</b><span>کلاس فعال</span></div><div class="m"><b>'+fa(held)+'</b><span>نوبت برگزارشده</span></div><div class="m"><b>'+fa(heldCls)+'</b><span>دوره متفاوت برگزارشده</span></div><div class="m"><b>'+fa(part.size)+'</b><span>شرکت‌کننده (نفر)</span></div><div class="m"><b>'+fa(pres)+'</b><span>حضور ثبت‌شده</span></div><div class="m"><b>'+fa(absn)+'</b><span>غیبت ثبت‌شده</span></div><div class="m"><b>'+fmt(g)+'</b><span>امتیاز عمومی</span></div><div class="m"><b>'+fmt(m)+'</b><span>امتیاز نیمه‌تخصصی</span></div><div class="m"><b>'+fmt(sp)+'</b><span>امتیاز تخصصی</span></div>'+
+ (hasHours()?'<div class="m"><b>'+fmt(rk.reduce((n,r)=>n+r.hours,0))+'</b><span>جمع ساعت آموزش (نفر-ساعت)</span></div>':'')+'<div class="m b"><b>'+fa((()=>{let n=0;for(const p of db.staff)if(p.active)for(const c of db.classes)if(c.active&&c.valid&&statusOf(p,c).st==='expired')n++;return n})())+'</b><span>مورد دوره منقضی‌شده</span></div>'+'<div class="m b"><b>'+fa(def.length)+'</b><span>نفر دارای کسری امتیاز (امسال)</span></div><div class="m b"><b>'+fa(nMis+nExp)+'</b><span>نفر با اجباری نگذرانده/منقضی</span></div><div class="m w"><b>'+fa(nSoon)+'</b><span>نفر نزدیک انقضای بازآموزی</span></div></div></div>'+
+ '<div class="card"><h2>برترین‌ها بر اساس مجموع امتیاز</h2>'+(top.some(r=>r.total)?'<div class="bars">'+top.map(r=>'<div class="b"><span>'+esc(r.p.name)+'</span><i style="width:'+Math.max(2,r.total/mx*100)+'%"></i><b>'+fmt(r.total)+'</b></div>').join('')+'</div>':'<p class="muted">هنوز امتیازی ثبت نشده است.</p>')+'</div>'+
+ '<div class="card"><h2>پرسنل بدون آموزش یا کم‌آموزش (سال '+fa(curYear())+')</h2>'+(an.length?'<div class="tw"><table><tr><th class="l">نام</th><th>گروه</th><th>مشارکت</th><th>وضعیت</th></tr>'+an.map(a=>'<tr><td class="l">'+esc(a.p.name)+'</td><td>'+esc(gname(a.p.groupId))+'</td><td>'+fa(a.att)+' از '+fa(a.held)+'</td><td><span class="bd '+(a.cat==='none'?'bad':'warn')+'">'+CATL[a.cat]+'</span></td></tr>').join('')+'</table></div><button class="btn sm" data-act="goRep" data-t="analysis">گزارش کامل</button>':'<p class="muted">مورد قابل توجهی نیست.</p>')+'</div>'+
+ '<div class="card"><h2>کلاس‌های پیش‌رو</h2>'+(up.length?up.map(s=>'<div class="bar" style="margin:4px 0"><b>'+esc(sname(s))+'</b><span class="muted">'+showDate(s.date)+'</span><span class="sp"></span></div>').join(''):'<p class="muted">نوبت آینده‌ای ثبت نشده؛ از «تقویم» یا «نوبت‌ها» نوبت جدید بسازید.</p>')+'</div>'+
+ '<div class="card"><h2>آخرین نوبت‌ها</h2>'+(db.sessions.length?'<div class="tw"><table><tr><th class="l">کلاس</th><th>تاریخ</th><th>حاضر</th><th></th></tr>'+sortedSessions().slice(0,6).map(s=>'<tr><td class="l">'+esc(sname(s))+'</td><td>'+showDate(s.date)+'</td><td>'+fa(Object.values(db.att[s.id]||{}).filter(r=>r.s==='p').length)+'</td><td><button class="btn sm" data-act="sesAttend" data-id="'+s.id+'">ثبت حضور</button></td></tr>').join('')+'</table></div>':'<p class="muted">نوبتی ثبت نشده است.</p>')+'</div>';
+},
+attend(){
+ const ss=sortedSessions();
+ if(!ss.length)return empty('هنوز نوبت برگزاری ثبت نشده است.','sesNew','＋ ثبت اولین نوبت');
+ let s=ses(ui.sid);if(!s){s=ss.find(isHeld)||ss[0];ui.sid=s.id}
+ const att=db.att[s.id]||{},q=norm(ui.q);
+ let list=db.staff.filter(p=>p.active||att[p.id]);const all=list;
+ if(ui.gf)list=list.filter(p=>p.groupId===ui.gf);
+ if(q)list=list.filter(p=>norm(p.name).includes(q)||norm(p.code).includes(q));
+ const cnt=k=>all.filter(p=>att[p.id]?.s===k).length,un=all.length-cnt('p')-cnt('a');
+ const rows=list.map(p=>{
+  const r=att[p.id],st=r?.s||'',e=st!=='p'?earlier(p.id,s.id):null;
+  const pre=st==='p'?{t:r.t,v:r.v}:resolve(s,p.groupId);
+  return '<div class="row '+st+'"><div class="who"><b>'+esc(p.name)+'</b><small>'+esc(gname(p.groupId))+(p.code?' · '+esc(p.code):'')+'</small></div><div class="seg">'+
+  '<button data-act="att" data-s="'+s.id+'" data-p="'+p.id+'" data-st="p" class="'+(st==='p'?'on p':'')+'"'+(e?' disabled':'')+'>حاضر</button><button data-act="att" data-s="'+s.id+'" data-p="'+p.id+'" data-st="a" class="'+(st==='a'?'on a':'')+'">غایب</button></div>'+
+  '<div class="pt">'+bdg(pre.t)+'<b>'+fmt(pre.v)+'</b><small>امتیاز'+(st==='p'?'':' (در صورت حضور)')+'</small>'+(r?.m?'<span class="bd man">دستی</span>':'')+(st==='p'?(r.g!==p.groupId?'<span class="bd man">گروه زمان ثبت: '+esc(gname(r.g))+'</span>':'')+' <button class="btn sm" data-act="recEdit" data-s="'+s.id+'" data-p="'+p.id+'">ویرایش امتیاز</button><button class="btn sm" data-act="cert" data-s="'+s.id+'" data-p="'+p.id+'">گواهی</button>':'')+'</div>'+
+  (r?.m&&r.n?'<div class="note muted">علت ویرایش دستی: '+esc(r.n)+'</div>':'')+
+  (r?'<div class="note muted">'+(r.r?'<span class="bd warn">'+esc(r.r)+'</span> ':'')+esc(r.c||'')+' <button class="btn sm" data-act="noteEdit" data-s="'+s.id+'" data-p="'+p.id+'">'+(r.s==='a'?'علت غیبت / توضیح':'توضیح')+'</button></div>':'')+
+  (e?'<div class="note warn">این فرد قبلاً در '+showDate(e.date)+' همین کلاس را گذرانده و امتیازش ثبت شده است.</div>':'')+'</div>';
+ }).join('');
+ return '<div class="card"><div class="bar"><select data-f="sid" aria-label="نوبت">'+opts(ss.map(x=>[x.id,sname(x)+' — '+showDate(x.date)+(isHeld(x)?'':' ('+STS[effStatus(x)]+')')]),s.id)+'</select><span class="sp"></span><button class="btn" data-act="sesNew">＋ نوبت جدید</button></div>'+
+ '<div class="bar"><b>'+esc(sname(s))+'</b>'+(effStatus(s)!=='held'?'<span class="bd warn">'+STS[effStatus(s)]+' — ثبت حضور فعال نیست</span>':'')+'<span class="muted">'+showDate(s.date)+(s.instructor?' · مدرس: '+esc(s.instructor):'')+'</span><span class="sp"></span><span class="ok">حاضر: '+fa(cnt('p'))+'</span><span class="bad">غایب: '+fa(cnt('a'))+'</span><span class="muted">ثبت‌نشده: '+fa(un)+'</span></div>'+
+ '<div class="bar"><input type="search" data-q placeholder="جست‌وجوی نام یا کد پرسنلی" value="'+esc(ui.q)+'"><select data-f="gf"><option value="">همه گروه‌ها</option>'+opts(db.groups.map(g=>[g.id,g.name]),ui.gf)+'</select><button class="btn" data-act="allPresent">همه ثبت‌نشده‌ها حاضر</button><button class="btn" data-act="attClear">پاک‌کردن این نوبت</button><button class="btn" data-act="cert" data-s="'+s.id+'">گواهی همه حاضران</button></div>'+
+ '<p class="hint">نوع و مقدار امتیاز از قانون «کلاس × گروه شغلی» خودکار تعیین و همان لحظه ذخیره می‌شود؛ با تغییر بعدی گروه یا قانون، سوابق قبلی عوض نمی‌شوند. همه تغییرات خودکار ذخیره می‌شود.</p>'+(rows||'<div class="empty">پرسنلی یافت نشد.</div>')+'</div>';
+},
+calendar(){
+ if(!ui.cal){const t=today()||'1405/01/01';ui.cal={y:+t.slice(0,4),m:+t.slice(5,7)}}
+ const {y,m}=ui.cal,len=monthLen(y,m),first=toJdn(y+'/'+pad2(m)+'/01'),wd=wdIdx(first),t=today();
+ let cells=WD.map(d=>'<div class="h">'+d.slice(0,3)+'</div>').join('')+'<div class="d e"></div>'.repeat(wd);
+ for(let d=1;d<=len;d++){
+  const ds=y+'/'+pad2(m)+'/'+pad2(d),fr=mod(wd+d-1,7)===6;
+  const ss=db.sessions.filter(s=>s.date===ds);
+  cells+='<div class="d'+(fr?' fr':'')+(ds===t?' td':'')+'"><b>'+fa(d)+'</b>'+ss.map(s=>'<button class="chip" data-act="sesAttend" data-id="'+s.id+'" title="'+esc(sname(s))+'">'+esc(sname(s))+'</button>').join('')+'</div>';
+ }
+ const cnt=db.sessions.filter(s=>s.date&&s.date.startsWith(y+'/'+pad2(m))).length;
+ return '<div class="card"><div class="bar"><button class="btn" data-act="calNav" data-d="-1">‹ ماه قبل</button><b>'+MONTHS[m-1]+' '+fa(y)+'</b><button class="btn" data-act="calNav" data-d="1">ماه بعد ›</button><button class="btn" data-act="calNav" data-d="0">امروز</button><span class="sp"></span><span class="muted">'+fa(cnt)+' نوبت در این ماه</span><button class="btn pri" data-act="sesNew">＋ نوبت جدید</button></div><div class="cal">'+cells+'</div><p class="hint">روی نام کلاس بزنید تا مستقیم به ثبت حضور همان نوبت بروید. نوبت‌های آینده را هم می‌توانید از همین‌جا برنامه‌ریزی کنید.</p></div>';
+},
+sessions(){
+ let ss=sortedSessions();if(ui.cf)ss=ss.filter(s=>s.classId===ui.cf);
+ return '<div class="card"><div class="bar"><select data-f="cf"><option value="">همه کلاس‌ها</option>'+opts(db.classes.map(c=>[c.id,c.name]),ui.cf)+'</select><span class="sp"></span><button class="btn pri" data-act="sesNew">＋ نوبت جدید</button></div>'+
+ (ss.length?'<div class="tw"><table><tr><th>تاریخ</th><th class="l">کلاس</th><th>مدرس</th><th>قانون پیش‌فرض نوبت</th><th>حاضر</th><th>عملیات</th></tr>'+ss.map(s=>'<tr><td>'+showDate(s.date)+(effStatus(s)!=='held'?'<br><span class="bd warn">'+STS[effStatus(s)]+'</span>':'')+'</td><td class="l">'+esc(sname(s))+(s.note?'<br><small>'+esc(s.note)+'</small>':'')+'</td><td>'+esc(s.instructor||'—')+'</td><td>'+bdg(s.snap.type)+fmt(s.snap.score)+(s.snap.valid?'<br><small>اعتبار '+fa(s.snap.valid)+' ماه</small>':'')+'</td><td>'+fa(Object.values(db.att[s.id]||{}).filter(r=>r.s==='p').length)+'</td><td class="acts"><button class="btn sm" data-act="sesAttend" data-id="'+s.id+'">حضور</button><button class="btn sm" data-act="cert" data-s="'+s.id+'">گواهی</button><button class="btn sm" data-act="sesEdit" data-id="'+s.id+'">ویرایش</button><button class="btn sm" data-act="sesRefresh" data-id="'+s.id+'">بازخوانی قانون کلاس</button><button class="btn sm bad" data-act="sesDel" data-id="'+s.id+'">حذف</button></td></tr>').join('')+'</table></div>':'<div class="empty">نوبتی ثبت نشده است.</div>')+'</div>';
+},
+classes(){
+ return '<div class="card"><div class="bar"><h2 style="margin:0">کلاس‌ها و قانون امتیازدهی هر گروه شغلی</h2><span class="sp"></span><button class="btn" data-act="groups">گروه‌های شغلی و حداقل امتیاز</button><button class="btn pri" data-act="classNew">＋ کلاس جدید</button></div>'+
+ (db.classes.length?'<div class="tw"><table><tr><th class="l">کلاس</th><th>پیش‌فرض</th><th class="l">قانون هر گروه</th><th>نوبت‌ها</th><th>وضعیت</th><th>عملیات</th></tr>'+db.classes.map(c=>{
+  const n=db.sessions.filter(s=>s.classId===c.id).length;
+  const ex=db.groups.map(g=>{const r=c.rules[g.id];const t=r?.type||c.type,v=r&&r.score!==''&&r.score!=null?r.score:c.score;return '<span class="bd '+t+'" title="'+(r?'قانون ویژه':'پیش‌فرض')+'">'+esc(g.name)+': '+TYPES[t]+' '+fmt(v)+(r&&(r.type||r.score!=='')?' ★':'')+(reqOf(c,g.id)?' ⚑':'')+'</span>'}).join(' ');
+  return '<tr class="'+(c.active?'':'off')+'"><td class="l"><b>'+esc(c.name)+'</b><br><small>'+esc(c.code)+(c.req?' · اجباری':'')+(c.valid?' · اعتبار '+fa(c.valid)+' ماه':'')+(c.hours?' · '+fa(c.hours)+' ساعت':'')+'</small></td><td>'+bdg(c.type)+'<br>'+fmt(c.score)+'</td><td class="l">'+(ex||'<span class="muted">گروهی تعریف نشده</span>')+'</td><td>'+fa(n)+'</td><td>'+(c.active?'فعال':'آرشیو')+'</td><td class="acts"><button class="btn sm" data-act="classEdit" data-id="'+c.id+'">ویرایش</button><button class="btn sm" data-act="sesNew" data-id="'+c.id+'">نوبت جدید</button><button class="btn sm" data-act="classToggle" data-id="'+c.id+'">'+(c.active?'آرشیو':'فعال‌سازی')+'</button><button class="btn sm bad" data-act="classDel" data-id="'+c.id+'">حذف</button></td></tr>'}).join('')+'</table></div><p class="hint">★ قانون ویژه گروه | ⚑ اجباری برای آن گروه. تغییر قانون کلاس روی نوبت‌ها و حضورهای قبلی اثر نمی‌گذارد.</p>':'<div class="empty">کلاسی تعریف نشده است.</div>')+'</div>';
+},
+staff(){
+ const q=norm(ui.q);
+ const rows=ranking({},true).filter(r=>(r.p.active||ui.inactive)&&(!ui.gf||r.p.groupId===ui.gf)&&(!q||norm(r.p.name).includes(q)||norm(r.p.code).includes(q)));
+ return '<div class="card"><div class="bar"><input type="search" data-q placeholder="جست‌وجوی نام یا کد" value="'+esc(ui.q)+'"><select data-f="gf"><option value="">همه گروه‌ها</option>'+opts(db.groups.map(g=>[g.id,g.name]),ui.gf)+'</select><label class="ck" style="margin:0"><input type="checkbox" data-f="inactive"'+(ui.inactive?' checked':'')+'>نمایش غیرفعال‌ها</label><span class="sp"></span><button class="btn" data-act="groups">گروه‌های شغلی</button><button class="btn" data-act="staffImport">ورود دسته‌جمعی</button><button class="btn pri" data-act="staffNew">＋ پرسنل جدید</button></div>'+
+ (rows.length?'<div class="tw"><table><tr><th>رتبه</th><th class="l">نام</th><th>گروه</th><th>کلاس</th><th>عمومی</th><th>نیمه‌تخصصی</th><th>تخصصی</th><th>جمع</th><th>عملیات</th></tr>'+rows.map(r=>'<tr class="'+(r.p.active?'':'off')+'"><td>'+fa(r.rank)+'</td><td class="l"><b>'+esc(r.p.name)+'</b>'+(r.p.code?'<br><small>'+esc(r.p.code)+'</small>':'')+'</td><td>'+esc(gname(r.p.groupId))+'</td><td>'+fa(r.count)+'</td><td>'+fmt(r.general)+'</td><td>'+fmt(r.semi)+'</td><td>'+fmt(r.specific)+'</td><td><b>'+fmt(r.total)+'</b></td><td class="acts"><button class="btn sm" data-act="staffProfile" data-id="'+r.p.id+'">پرونده</button><button class="btn sm" data-act="staffEdit" data-id="'+r.p.id+'">ویرایش</button><button class="btn sm" data-act="staffToggle" data-id="'+r.p.id+'">'+(r.p.active?'غیرفعال':'فعال')+'</button><button class="btn sm bad" data-act="staffDel" data-id="'+r.p.id+'">حذف</button></td></tr>').join('')+'</table></div>':'<div class="empty">پرسنلی یافت نشد.</div>')+'</div>';
+},
+reports(){
+ const f=ui.rep,T=repData();
+ const title=[f.from?'از '+fa(f.from):'',f.to?'تا '+fa(f.to):'',f.classId?'کلاس: '+(cls(f.classId)?.name||''):'',f.groupId?'گروه: '+gname(f.groupId):''].filter(Boolean).join(' | ')||'همه سوابق';
+ return '<div class="card"><div class="bar noprint">'+RTABS.map(([k,l])=>'<button class="btn sm'+(ui.rtab===k?' on':'')+'" data-act="rtab" data-k="'+k+'">'+l+'</button>').join('')+'</div>'+
+ '<div class="bar noprint">'+(ui.rtab==='person'?'<select data-f="rep.pid"><option value="">انتخاب پرسنل…</option>'+opts(db.staff.map(p=>[p.id,p.name]),f.pid)+'</select>':'')+
+ (ui.rtab==='monthly'?'<input data-f="rep.year" placeholder="سال (مثلاً '+fa(curYear())+')" value="'+esc(fa(f.year))+'" style="min-width:110px">':'')+
+ '<input data-f="rep.from" placeholder="از تاریخ ۱۴۰۵/۰۱/۰۱" value="'+esc(fa(f.from))+'"><input data-f="rep.to" placeholder="تا تاریخ" value="'+esc(fa(f.to))+'"><select data-f="rep.classId"><option value="">همه کلاس‌ها</option>'+opts(db.classes.map(c=>[c.id,c.name]),f.classId)+'</select><select data-f="rep.groupId"><option value="">همه گروه‌ها</option>'+opts(db.groups.map(g=>[g.id,g.name]),f.groupId)+'</select><select data-f="rep.gmode" title="مبنای گروه">'+opts([['hist','گروه زمان ثبت'],['cur','گروه فعلی']],f.gmode||'hist')+'</select>'+(ui.rtab==='rank'?'<select data-f="rep.sort" title="مرتب‌سازی">'+opts([['total','مرتب: امتیاز تاریخی'],['valid','مرتب: امتیاز معتبر'],['sessions','مرتب: نوبت حضور'],['courses','مرتب: دوره متفاوت']],f.sort||'total')+'</select>':'')+'<span class="sp"></span><button class="btn" data-act="repCsv">CSV</button><button class="btn" data-act="repXls">Excel</button><button class="btn pri" data-act="print">چاپ / PDF</button></div>'+
+ lh(RTABS.find(x=>x[0]===ui.rtab)[1])+'<p class="muted">فیلتر: '+esc(title)+'</p>'+T.map(tblHtml).join('')+'</div>';
+},
+log(){
+ const q=norm(ui.q),rows=[...(db.log||[])].reverse().filter(e=>!q||norm(e.txt+' '+e.act+' '+e.who).includes(q)).slice(0,300);
+ return '<div class="card"><div class="bar"><input type="search" data-q placeholder="جست‌وجو در تاریخچه" value="'+esc(ui.q)+'"><span class="sp"></span><span class="muted">'+fa((db.log||[]).length)+' رویداد (۳۰۰ مورد آخر نمایش داده می‌شود)</span><button class="btn" data-act="logCsv">CSV</button></div>'+
+ (rows.length?'<div class="tw"><table><tr><th>زمان</th><th>کاربر</th><th>نوع</th><th class="l">شرح</th></tr>'+rows.map(e=>'<tr><td>'+esc(fa(fdate(e.t)))+'</td><td>'+esc(e.who||'—')+'</td><td>'+esc(e.act)+'</td><td class="l">'+esc(e.txt)+'</td></tr>').join('')+'</table></div>':'<div class="empty">رویدادی ثبت نشده است.</div>')+'<p class="hint">ثبت حضور، ویرایش دستی امتیاز (با علت)، تغییر قوانین و حذف‌ها اینجا می‌ماند. نام کاربر را در «تنظیمات» وارد کنید.</p></div>';
+},
+backup(){
+ const prev=!!localStorage.getItem(PREV),s=db.settings;
+ return '<div class="card"><h2>تنظیمات سربرگ، گواهی و تحلیل</h2><p>بیمارستان/مرکز: <b>'+esc(s.org||'—')+'</b> | واحد: <b>'+esc(s.unit)+'</b> | کاربر ثبت‌کننده: <b>'+esc(s.operator||'—')+'</b> | امضاکننده: <b>'+esc(s.signer||'—')+'</b> ('+esc(s.signerTitle)+') | آستانه کم‌فعالی: <b>'+fa(s.lowRate)+'٪</b></p><button class="btn" data-act="settings">ویرایش تنظیمات</button></div>'+
+ '<div class="card"><h2>پشتیبان‌گیری</h2><p class="hint">اطلاعات فقط در همین مرورگر ذخیره می‌شود. مرتب پشتیبان JSON بگیرید و برای انتقال به دستگاه یا مرورگر دیگر از همان استفاده کنید. پشتیبان نسخه‌های قبلی هم بازیابی می‌شود و سوابق منتقل می‌شود. قبل از هر بازیابی یا پاک‌سازی، نسخه فعلی برای بازگشت نگه‌داری می‌شود.</p><div class="bar"><button class="btn pri" data-act="backup">دریافت پشتیبان JSON</button><button class="btn" data-act="restore">بازیابی از فایل</button><input id="rf" type="file" accept=".json,application/json" hidden>'+(prev?'<button class="btn" data-act="undoRestore">بازگشت به وضعیت قبل از آخرین بازیابی/پاک‌سازی</button>':'')+'</div></div>'+
+ '<div class="card"><h2>خروجی‌ها</h2><div class="bar"><button class="btn" data-act="csvAtt">CSV ریز همه حضورها</button><button class="btn" data-act="xlsAtt">Excel ریز همه حضورها</button></div><p class="hint">گزارش‌های دیگر را از بخش «گزارش‌ها» با CSV، Excel یا PDF بگیرید.</p></div>'+
+ '<div class="card"><h2>شروع مجدد</h2><div class="bar"><button class="btn bad" data-act="resetEmpty">پاک‌کردن همه اطلاعات (با اطلاعات خالی)</button><button class="btn" data-act="loadSample">بارگذاری نمونه</button></div></div>';
+}};
+function statusHtml(){
+ const lb=db.meta.lastBackup?'آخرین پشتیبان: '+fa(fdate(db.meta.lastBackup)):'هنوز پشتیبان نگرفته‌اید';
+ return (saveErr?'<b>⚠ ذخیره در مرورگر ممکن نیست؛ فوراً پشتیبان بگیرید. </b>':'ذخیره خودکار در همین مرورگر • ')+lb+(db.meta.dirty?' • '+fa(db.meta.dirty)+' تغییر بدون پشتیبان':'');
+}
+function render(keep){
+ const a=document.activeElement,hadQ=a&&a.dataset&&a.dataset.q!==undefined,pos=hadQ?a.selectionStart:0,y=scrollY;
+ $('#nav').innerHTML=NAV.map(([k,l])=>'<button data-act="nav" data-v="'+k+'" class="'+(ui.view===k?'on':'')+'">'+l+'</button>').join('');
+ $('#status').innerHTML=statusHtml();$('#unitname').textContent=(db.settings.org?db.settings.org+' — ':'')+db.settings.unit;
+ $('#app').innerHTML=(ui.view==='reports'?'':lh(NAV.find(x=>x[0]===ui.view)[1]))+views[ui.view]();labelTables($('#app'));
+ if(hadQ){const n=document.querySelector('[data-q]');if(n){n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}}}
+ scrollTo(0,keep===false?0:y);
+}
+
+/* ---------- فرم‌ها ---------- */
+const sigOf=o=>JSON.stringify([o.type,o.score,o.valid,Object.entries(o.rules).map(([k,v])=>[k,v.type,v.score,v.req]).sort()]);
+function classModal(c){
+ const rules=c?.rules||{},code=c?.code||'CLS-'+String(db.classes.length+1).padStart(3,'0');
+ let gr='';
+ if(db.groups.length)gr='<h4>قانون هر گروه شغلی</h4><p class="hint">نوع یا امتیاز خالی = مطابق پیش‌فرض بالا.</p><div class="tw"><table style="min-width:0"><tr><th class="l">گروه</th><th>نوع امتیاز</th><th>امتیاز</th><th>اجباری؟</th></tr>'+db.groups.map(g=>'<tr><td class="l">'+esc(g.name)+'</td><td><select name="rt_'+g.id+'">'+typeOpts(rules[g.id]?.type||'','مطابق پیش‌فرض')+'</select></td><td><input name="rs_'+g.id+'" inputmode="decimal" placeholder="پیش‌فرض" value="'+(rules[g.id]&&rules[g.id].score!==''&&rules[g.id].score!=null?fa(rules[g.id].score):'')+'"></td><td><select name="rq_'+g.id+'">'+opts([['','مطابق پیش‌فرض'],['y','اجباری'],['n','اختیاری']],rules[g.id]?.req||'')+'</select></td></tr>').join('')+'</table></div>';
+ openModal(c?'ویرایش کلاس':'کلاس جدید','<label>نام کلاس<input name="name" value="'+esc(c?.name||'')+'"></label><label>کد ثابت<input name="code" value="'+esc(code)+'"></label><label>نوع پیش‌فرض<select name="type">'+typeOpts(c?.type||'general')+'</select></label><label>امتیاز پیش‌فرض<input name="score" inputmode="decimal" value="'+fa(c?c.score:10)+'"></label><label>وضعیت پیش‌فرض<select name="req">'+opts([['0','اختیاری'],['1','اجباری']],c?.req?'1':'0')+'</select></label><label>اعتبار آموزش (ماه؛ ۰ = بدون انقضا)<input name="valid" inputmode="numeric" value="'+fa(c?.valid||0)+'"></label><p class="hint">اگر اعتبار تعریف شود، پس از انقضا همان فرد می‌تواند دوباره در این کلاس شرکت کند و امتیاز بگیرد؛ قبل از انقضا ثبت مجدد مسدود است.</p><label>مدت کلاس (ساعت آموزشی؛ ۰ = ثبت نشود)<input name="hours" inputmode="decimal" value="'+fa(c?.hours||0)+'"></label><label>توضیحات<input name="note" value="'+esc(c?.note||'')+'"></label>'+gr,fd=>{
+  const name=String(fd.get('name')).trim(),cd=String(fd.get('code')).trim(),type=fd.get('type'),score=num(fd.get('score')),vraw=String(fd.get('valid')||'').trim(),valid=vraw===''?0:num(vraw);
+  if(!name)return 'نام کلاس را وارد کنید.';
+  if(db.classes.some(x=>x!==c&&norm(x.name)===norm(name)))return 'کلاسی با این نام قبلاً تعریف شده است.';
+  if(!cd)return 'کد کلاس را وارد کنید.';
+  if(db.classes.some(x=>x!==c&&norm(x.code)===norm(cd)))return 'این کد قبلاً استفاده شده است.';
+  if(!TK.includes(type))return 'نوع امتیاز نامعتبر است.';
+  if(!okScore(score))return 'امتیاز باید عددی بین ۰ تا ۱۰۰۰ باشد.';
+  if(!(valid>=0&&valid<=120))return 'اعتبار باید بین ۰ تا ۱۲۰ ماه باشد.';
+  const hv=String(fd.get('hours')||'').trim(),hours=hv===''?0:num(hv);
+  if(!(hours>=0&&hours<=1000))return 'مدت کلاس باید عددی بین ۰ تا ۱۰۰۰ ساعت باشد.';
+  const nr={};
+  for(const g of db.groups){const t=fd.get('rt_'+g.id)||'',sv=String(fd.get('rs_'+g.id)||'').trim(),rq=fd.get('rq_'+g.id)||'';let sc='';if(sv!==''){sc=num(sv);if(!okScore(sc))return 'امتیاز گروه «'+g.name+'» نامعتبر است.'}if(t||sc!==''||rq)nr[g.id]={type:TK.includes(t)?t:'',score:sc,req:rq==='y'||rq==='n'?rq:''}}
+  const d={name,code:cd,type,score,rules:nr,note:String(fd.get('note')||'').trim(),req:fd.get('req')==='1',valid:Math.round(valid),hours};
+  if(c&&db.sessions.some(s=>s.classId===c.id)&&sigOf(d)!==sigOf(c)&&!confirm('قانون امتیازدهی این کلاس تغییر می‌کند.\nنوبت‌ها و حضورهای قبلی تغییر نمی‌کنند و فقط نوبت‌های جدید با قانون تازه ساخته می‌شوند. ادامه می‌دهید؟'))return 'تغییرات اعمال نشد.';
+  if(c){logE('کلاس','ویرایش «'+c.name+'»'+(sigOf(d)!==sigOf(c)?' (قوانین امتیاز تغییر کرد)':''));Object.assign(c,d)}else{db.classes.push({id:uid(),active:true,...d});logE('کلاس','ایجاد «'+name+'»')}
+  commit();render();toast('ذخیره شد.');
+ },{wide:true});
+}
+function sessionModal(s,pre){
+ const cl=db.classes.filter(c=>c.active||c.id===s?.classId);
+ if(!cl.length){toast('ابتدا یک کلاس فعال تعریف کنید.','bad');return}
+ const locked=s&&Object.keys(db.att[s.id]||{}).length>0,sel=s?.classId||pre||cl[0].id;
+ openModal(s?'ویرایش نوبت':'نوبت جدید','<label>کلاس<select name="classId"'+(locked?' disabled':'')+'>'+opts(cl.map(c=>[c.id,c.name]),sel)+'</select></label>'+(locked?'<p class="hint">کلاس نوبتی که حضور دارد قابل تغییر نیست.</p>':'')+'<label>تاریخ شمسی (می‌تواند آینده باشد)<div class="inl"><input name="date" inputmode="numeric" placeholder="۱۴۰۵/۰۸/۲۴" value="'+(s?fa(s.date):'')+'"><button type="button" class="btn sm" data-act="fillToday">امروز</button></div></label><label>مدرس<input name="instructor" value="'+esc(s?.instructor||'')+'"></label><label class="ck"><input type="checkbox" name="canceled"'+(s?.status==='canceled'?' checked':'')+'>این نوبت لغو شده است (در امتیاز و گزارش‌ها محاسبه نمی‌شود)</label><label>توضیحات<textarea name="note" rows="2">'+esc(s?.note||'')+'</textarea></label>',fd=>{
+  const cid=locked?s.classId:fd.get('classId'),d=normDate(fd.get('date'));
+  if(!d)return 'تاریخ شمسی معتبر وارد کنید (مثلاً ۱۴۰۵/۰۸/۲۴).';
+  if(db.sessions.some(x=>x!==s&&x.classId===cid&&x.date===d))return 'برای این کلاس در همین تاریخ قبلاً نوبت ثبت شده است.';
+  const o={classId:cid,date:d,instructor:String(fd.get('instructor')||'').trim(),note:String(fd.get('note')||'').trim(),status:fd.get('canceled')==='on'?'canceled':'auto'};
+  if(s&&locked&&s.date!==d&&!confirm('این نوبت دارای ثبت حضور/غیاب است. تغییر تاریخ روی اعتبار دوره و گزارش‌ها اثر می‌گذارد. ادامه می‌دهید؟'))return 'تغییر تاریخ لغو شد.';
+  if(s){if(cid!==s.classId)s.snap=mkSnap(cls(cid));Object.assign(s,o);logE('نوبت','ویرایش '+sname(s)+' / '+d)}
+  else{const n={id:uid(),...o,snap:mkSnap(cls(cid))};db.sessions.push(n);ui.sid=n.id;logE('نوبت','ایجاد '+sname(n)+' / '+d)}
+  commit();render();toast('ذخیره شد.');
+ });
+}
+function staffModal(p){
+ openModal(p?'ویرایش پرسنل':'پرسنل جدید','<label>نام و نام‌خانوادگی<input name="name" value="'+esc(p?.name||'')+'"></label><label>کد پرسنلی (اختیاری)<input name="code" value="'+esc(p?.code||'')+'"></label><label>گروه شغلی<select name="groupId"><option value="">بدون گروه</option>'+opts(db.groups.map(g=>[g.id,g.name]),p?.groupId||'')+'</select></label>'+(p?'<p class="hint">با تغییر گروه، سوابق قبلی با گروه زمان ثبت باقی می‌ماند و فقط حضورهای جدید طبق گروه جدید محاسبه می‌شود.</p>':'')+'<label class="ck"><input type="checkbox" name="active"'+(!p||p.active?' checked':'')+'>فعال</label>',fd=>{
+  const name=String(fd.get('name')).trim(),code=String(fd.get('code')).trim(),gid=fd.get('groupId')||'';
+  if(!name)return 'نام را وارد کنید.';
+  if(db.staff.some(x=>x!==p&&norm(x.name)===norm(name)&&norm(x.code)===norm(code)))return 'پرسنل هم‌نام قبلاً ثبت شده؛ برای تفکیک، کد پرسنلی متفاوت وارد کنید.';
+  const o={name,code,groupId:grp(gid)?gid:'',active:fd.get('active')==='on'};
+  if(p){if(p.groupId!==o.groupId)(p.gh??=[]).push({d:today(),from:p.groupId,to:o.groupId});logE('پرسنل','ویرایش «'+p.name+'»'+(p.groupId!==o.groupId?' — تغییر گروه از «'+gname(p.groupId)+'» به «'+gname(o.groupId)+'»':''));Object.assign(p,o)}else{db.staff.push({id:uid(),...o});logE('پرسنل','ایجاد «'+name+'» ('+gname(o.groupId)+')')}
+  commit();render();toast('ذخیره شد.');
+ });
+}
+function groupsModal(){
+ openModal('گروه‌های شغلی','<p class="hint">نام گروه‌ها و «حداقل امتیاز لازم» (در بازه گزارش کسری امتیاز، پیش‌فرض سال جاری) قابل ویرایش است. گروهی که پرسنل یا سابقه دارد حذف نمی‌شود.</p>'+db.groups.map(g=>'<div class="inl" style="margin:5px 0"><input name="gn_'+g.id+'" value="'+esc(g.name)+'"><input name="gm_'+g.id+'" inputmode="decimal" style="max-width:110px" placeholder="حداقل امتیاز" value="'+(g.min?fa(g.min):'')+'"><button type="button" class="btn sm bad" data-act="groupDel" data-id="'+g.id+'">حذف</button></div>').join('')+'<label>افزودن گروه جدید<input name="newg" placeholder="مثلاً: ماما"></label>',fd=>{
+  const items=db.groups.map(g=>[g,String(fd.get('gn_'+g.id)||'').trim(),String(fd.get('gm_'+g.id)||'').trim()]);
+  const nw=String(fd.get('newg')||'').trim(),all=[...items.map(x=>x[1]),...(nw?[nw]:[])];
+  if(items.some(x=>!x[1]))return 'نام گروه نباید خالی باشد.';
+  if(new Set(all.map(norm)).size!==all.length)return 'نام گروه‌ها نباید تکراری باشد.';
+  for(const x of items){if(x[2]!==''&&!okScore(num(x[2])))return 'حداقل امتیاز گروه «'+x[1]+'» نامعتبر است.'}
+  items.forEach(([g,n,m])=>{g.name=n;g.min=m===''?0:num(m)});if(nw)db.groups.push({id:uid(),name:nw,min:0});
+  logE('گروه شغلی','ویرایش گروه‌ها'+(nw?' / افزودن «'+nw+'»':''));commit();render();toast('گروه‌ها ذخیره شد.');
+ });
+}
+function settingsModal(){
+ const s=db.settings;
+ openModal('تنظیمات','<label>نام بیمارستان/مرکز (سربرگ چاپ و گواهی)<input name="org" value="'+esc(s.org)+'"></label><label>نام واحد<input name="unit" value="'+esc(s.unit)+'"></label><label>نام شما (برای تاریخچه تغییرات)<input name="operator" value="'+esc(s.operator)+'"></label><label>امضاکننده گواهی<input name="signer" value="'+esc(s.signer)+'"></label><label>سمت امضاکننده<input name="signerTitle" value="'+esc(s.signerTitle)+'"></label><label>آستانه کم‌فعالی (درصد مشارکت در کلاس‌های برگزارشده)<input name="lowRate" inputmode="numeric" value="'+fa(s.lowRate)+'"></label>',fd=>{
+  const low=num(fd.get('lowRate'));if(!(low>=1&&low<=100))return 'آستانه باید بین ۱ تا ۱۰۰ باشد.';
+  Object.assign(db.settings,{org:String(fd.get('org')).trim(),unit:String(fd.get('unit')).trim()||DEFSET.unit,operator:String(fd.get('operator')).trim(),signer:String(fd.get('signer')).trim(),signerTitle:String(fd.get('signerTitle')).trim(),lowRate:low});
+  logE('تنظیمات','ویرایش تنظیمات');commit();render();toast('ذخیره شد.');
+ });
+}
+function recModal(sid,pid){
+ const r=rec(sid,pid),p=stf(pid),s=ses(sid);if(!r||r.s!=='p')return;
+ openModal('ویرایش دستی امتیاز — '+esc(p.name),'<p class="hint">کلاس: '+esc(sname(s))+' | گروه زمان ثبت: '+esc(gname(r.g))+'</p><label>نوع امتیاز<select name="t">'+typeOpts(r.t)+'</select></label><label>مقدار امتیاز<input name="v" inputmode="decimal" value="'+fa(r.v)+'"></label><label>علت تغییر (برای تغییر دستی الزامی است)<input name="n" value="'+esc(r.n||'')+'"></label><button type="button" class="btn sm" data-act="recReset" data-s="'+sid+'" data-p="'+pid+'">بازگشت به قانون خودکار گروه</button>',fd=>{
+  const v=num(fd.get('v')),t=fd.get('t'),n=String(fd.get('n')||'').trim();
+  if(!TK.includes(t))return 'نوع نامعتبر است.';if(!okScore(v))return 'امتیاز باید بین ۰ تا ۱۰۰۰ باشد.';
+  const df=resolve(s,r.g),auto=(t===df.t&&v===df.v);
+  if(!auto&&!n)return 'علت تغییر دستی را بنویسید.';
+  const old=TYPES[r.t]+' '+r.v;r.t=t;r.v=v;r.m=auto?0:1;r.n=auto?'':n;
+  logE('ویرایش امتیاز','«'+lg(s,p)+'» از '+old+' به '+TYPES[t]+' '+v+(auto?' (مطابق قانون خودکار)':' — علت: '+n));commit();render();toast('امتیاز ویرایش شد.');
+ });
+}
+const ABS_REASONS=['بیماری','مرخصی','شیفت / مأموریت','عدم اطلاع','سایر'];
+function noteModal(sid,pid){
+ const r=rec(sid,pid),p=stf(pid),s=ses(sid);if(!r)return;
+ const list=r.r&&!ABS_REASONS.includes(r.r)?[...ABS_REASONS,r.r]:ABS_REASONS;
+ openModal('توضیح — '+esc(p.name),'<p class="hint">'+esc(sname(s))+' / '+showDate(s.date)+'</p>'+(r.s==='a'?'<label>علت غیبت<select name="r"><option value="">— ثبت نشده —</option>'+list.map(x=>'<option'+(r.r===x?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></label>':'')+'<label>توضیح<textarea name="c" rows="3">'+esc(r.c||'')+'</textarea></label>',fd=>{
+  if(r.s==='a')r.r=String(fd.get('r')||'');
+  r.c=String(fd.get('c')||'').trim();
+  logE('توضیح',lg(s,p)+(r.s==='a'&&r.r?' — علت غیبت: '+r.r:'')+(r.c?' — '+r.c:''));commit();render();toast('ذخیره شد.');
+ });
+}
+function profile(p){
+ const r=pts(p),t=todayC(),mn=grp(p.groupId)?.min||0;
+ const courses=db.classes.filter(c=>c.active||r.items.some(i=>i.s.classId===c.id)).map(c=>{
+  const its=r.items.filter(i=>i.s.classId===c.id),st=statusOf(p,c),req=reqOf(c,p.groupId);
+  let hist=0,val=0;
+  its.forEach(i=>{hist+=i.r.v;const v=i.s.snap.valid||0;if(!v||!i.s.date||!t||addMonths(i.s.date,v)>=t)val+=i.r.v});
+  return{c,n:its.length,st,req,hist,val,need:st.st==='expired'||(req&&st.st==='missing')};
+ });
+ const absn=sortedSessions().filter(s=>isHeld(s)&&rec(s.id,p.id)?.s==='a');
+ const months=[];
+ if(t){const base=t.slice(0,7)+'/01';for(let k=11;k>=0;k--){const d=addMonths(base,-k).slice(0,7);months.push([d,r.items.filter(i=>(i.s.date||'').startsWith(d)).reduce((n,i)=>n+i.r.v,0)])}}
+ const mx=Math.max(1,...months.map(m=>m[1])),cl={ok:'ok',expiring:'warn',expired:'bad',missing:'man'};
+ const body='<div class="grid"><div class="m"><b>'+esc(gname(p.groupId))+'</b><span>گروه فعلی'+(mn?' (حداقل '+fmt(mn)+')':'')+'</span></div><div class="m"><b>'+fmt(r.total)+'</b><span>امتیاز تاریخی</span></div><div class="m"><b>'+fmt(r.validTotal)+'</b><span>امتیاز معتبر</span></div><div class="m"><b>'+fa(r.count)+'</b><span>نوبت حضور</span></div><div class="m"><b>'+fa(r.distinct)+'</b><span>دوره متفاوت</span></div>'+(hasHours()?'<div class="m"><b>'+fmt(r.hours)+'</b><span>ساعت آموزشی</span></div>':'')+'</div>'+
+ '<p class="muted">عمومی: '+fmt(r.general)+' | نیمه‌تخصصی: '+fmt(r.semi)+' | تخصصی: '+fmt(r.specific)+'</p>'+
+ '<h4>وضعیت دوره‌ها (⚑ = اجباری برای گروه فعلی)</h4><div class="tw"><table style="min-width:0"><tr><th class="l">دوره</th><th>وضعیت</th><th>آخرین شرکت</th><th>اعتبار</th><th>انقضا</th><th>نوبت</th><th>امتیاز تاریخی</th><th>امتیاز معتبر</th><th>بازآموزی</th></tr>'+
+ courses.map(x=>'<tr><td class="l">'+esc(x.c.name)+(x.req?' ⚑':'')+'</td><td><span class="bd '+cl[x.st.st]+'">'+STL[x.st.st]+'</span></td><td>'+(x.st.s?showDate(x.st.s.date):'—')+'</td><td>'+(x.c.valid?fa(x.c.valid)+' ماه':'بدون انقضا')+'</td><td>'+(x.st.ex?fa(x.st.ex):'—')+'</td><td>'+fa(x.n)+'</td><td>'+fmt(x.hist)+'</td><td>'+fmt(x.val)+'</td><td>'+(x.need?'<span class="bd bad">بله</span>':x.st.st==='expiring'?'<span class="bd warn">به‌زودی</span>':'—')+'</td></tr>').join('')+'</table></div>'+
+ '<h4>روند امتیاز ۱۲ ماه اخیر</h4>'+(months.some(m=>m[1])?'<div class="bars">'+months.map(m=>'<div class="b"><span>'+MONTHS[+m[0].slice(5,7)-1]+'</span><i style="width:'+(m[1]?Math.max(2,m[1]/mx*100):0)+'%"></i><b>'+fmt(m[1])+'</b></div>').join('')+'</div>':'<p class="muted">امتیازی در این بازه ثبت نشده است.</p>')+
+ '<h4>غیبت‌ها</h4>'+(absn.length?'<div class="tw"><table style="min-width:0"><tr><th>تاریخ</th><th class="l">دوره</th><th>علت</th><th class="l">توضیح</th></tr>'+absn.map(s=>{const x=rec(s.id,p.id);return '<tr><td>'+showDate(s.date)+'</td><td class="l">'+esc(sname(s))+'</td><td>'+esc(x.r||'—')+'</td><td class="l">'+esc(x.c||'')+'</td></tr>'}).join('')+'</table></div>':'<p class="muted">غیبتی ثبت نشده است.</p>')+
+ '<h4>سوابق تغییر گروه</h4>'+((p.gh&&p.gh.length)?'<ul>'+p.gh.map(h=>'<li>'+showDate(h.d)+': '+esc(gname(h.from))+' ← '+esc(gname(h.to))+'</li>').join('')+'</ul>':'<p class="muted">تغییر گروهی ثبت نشده است. گروه فعلی: '+esc(gname(p.groupId))+'</p>')+
+ '<h4>سوابق حضور</h4><div class="tw"><table style="min-width:0"><tr><th>تاریخ</th><th class="l">دوره</th><th>گروه زمان ثبت</th><th>نوع</th><th>امتیاز</th></tr>'+(r.items.map(i=>'<tr><td>'+showDate(i.s.date)+'</td><td class="l">'+esc(sname(i.s))+'</td><td>'+esc(gname(i.r.g))+'</td><td>'+bdg(i.r.t)+(i.r.m?'<span class="bd man" title="'+esc(i.r.n)+'">دستی</span>':'')+'</td><td>'+fmt(i.r.v)+'</td></tr>').join('')||'<tr><td colspan="5" class="muted">سابقه‌ای نیست</td></tr>')+'</table></div>';
+ openModal('پرونده آموزشی — '+esc(p.name),body,null,{wide:true});
+}
+const hk=x=>norm(String(x??'').replace(/‌/g,' '));
+const H_NAME=['نام','نام و نام خانوادگی','نام پرسنل','name'],H_CODE=['کد','کد پرسنلی','شماره پرسنلی','code'],H_GRP=['گروه','گروه شغلی','سمت','group'];
+function parseTable(text){
+ text=String(text||'').replace(/^﻿/,'');
+ const first=text.split(/\r?\n/).find(l=>l.trim())||'';
+ const cnt=c=>first.split(c).length-1;
+ const delim=cnt('\t')>0?'\t':[',',';','،'].reduce((b,c)=>cnt(c)>cnt(b)?c:b,',');
+ const rows=[];let row=[],cell='',q=false;
+ for(let i=0;i<text.length;i++){const ch=text[i];
+  if(q){if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=ch}
+  else if(ch==='"'&&cell.trim()==='')q=true;
+  else if(ch===delim){row.push(cell);cell=''}
+  else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(cell);cell='';if(row.some(x=>x.trim()!==''))rows.push(row);row=[]}
+  else cell+=ch}
+ row.push(cell);if(row.some(x=>x.trim()!==''))rows.push(row);
+ return rows.map(r=>r.map(x=>x.replace(/\s+/g,' ').trim())).slice(0,3000);
+}
+function planStaff(text){
+ const lines=parseTable(text);
+ const plan={add:[],skip:[],newGroups:[],headerUsed:false};
+ if(!lines.length)return plan;
+ let ix={n:0,c:1,g:2},start=0;
+ const hs=lines[0].map(hk);
+ if(hs.some(h=>H_NAME.includes(h))){plan.headerUsed=true;start=1;ix={n:hs.findIndex(h=>H_NAME.includes(h)),c:hs.findIndex(h=>H_CODE.includes(h)),g:hs.findIndex(h=>H_GRP.includes(h))}}
+ const byName=new Map(db.groups.map(g=>[hk(g.name),g])),pending=new Map(),seen=[];
+ for(let i=start;i<lines.length;i++){
+  const c=lines[i];
+  let name=(c[ix.n]||'').trim(),code=ix.c>=0?lat(c[ix.c]||'').trim():'',gn=ix.g>=0?(c[ix.g]||'').trim():'';
+  if(!plan.headerUsed&&c.length===2&&byName.has(hk(c[1]))){code='';gn=c[1]}
+  if(!name){plan.skip.push({name:'(ردیف '+(i+1)+')',why:'نام خالی'});continue}
+  if(db.staff.some(p=>hk(p.name)===hk(name)&&hk(p.code)===hk(code))||seen.some(x=>hk(x.name)===hk(name)&&hk(x.code)===hk(code))){plan.skip.push({name,why:'تکراری'});continue}
+  if(code&&(db.staff.some(p=>p.code&&hk(p.code)===hk(code))||seen.some(x=>x.code&&hk(x.code)===hk(code)))){plan.skip.push({name,why:'کد تکراری'});continue}
+  if(gn&&!byName.has(hk(gn))&&!pending.has(hk(gn)))pending.set(hk(gn),gn);
+  const item={name,code,gn};plan.add.push(item);seen.push(item);
+ }
+ plan.newGroups=[...pending.values()];return plan;
+}
+function applyPlan(plan){
+ const byName=new Map(db.groups.map(g=>[hk(g.name),g]));
+ plan.newGroups.forEach(n=>{if(!byName.has(hk(n))){const g={id:uid(),name:n,min:0};db.groups.push(g);byName.set(hk(n),g)}});
+ plan.add.forEach(x=>db.staff.push({id:uid(),name:x.name,code:x.code,groupId:x.gn?(byName.get(hk(x.gn))?.id||''):'',active:true}));
+ logE('پرسنل','ورود دسته‌جمعی: '+plan.add.length+' نفر'+(plan.newGroups.length?' / گروه جدید: '+plan.newGroups.join('، '):''));
+}
+function importModal(){
+ openModal('ورود دسته‌جمعی پرسنل','<p class="hint">از Excel ستون‌های «نام، کد پرسنلی، گروه شغلی» را کپی کنید و در کادر زیر بچسبانید (سطر اول می‌تواند عنوان ستون‌ها باشد). یا فایل CSV با کدگذاری UTF-8 انتخاب کنید. بدون عنوان، ترتیب ستون‌ها نام، کد، گروه است و کد و گروه اختیاری‌اند. گروهی که وجود ندارد ساخته می‌شود و ردیف تکراری رد می‌شود. پیش از ثبت، خلاصه نمایش داده می‌شود.</p><label>فایل CSV<input id="impf" type="file" accept=".csv,.tsv,.txt"></label><label>متن<textarea name="data" rows="9" placeholder="علی احمدی,1234,پرستار&#10;مریم رضایی,1235,ماما"></textarea></label>',fd=>{
+  const plan=planStaff(fd.get('data'));
+  if(!plan.add.length)return plan.skip.length?'ردیف قابل ثبتی نیست ('+fa(plan.skip.length)+' ردیف رد شد: '+plan.skip.slice(0,5).map(x=>x.name+' ('+x.why+')').join('، ')+').':'متنی برای ورود وجود ندارد.';
+  const msg='ورود دسته‌جمعی:\n'+fa(plan.add.length)+' نفر جدید ثبت می‌شود'+(plan.newGroups.length?'\nگروه جدید ساخته می‌شود: '+plan.newGroups.join('، '):'')+(plan.skip.length?'\n'+fa(plan.skip.length)+' ردیف رد می‌شود: '+plan.skip.slice(0,6).map(x=>x.name+' ('+x.why+')').join('، ')+(plan.skip.length>6?' ...':''):'')+'\n\nادامه می‌دهید؟';
+  if(!confirm(msg))return 'ثبت لغو شد.';
+  applyPlan(plan);commit();render();toast(fa(plan.add.length)+' نفر اضافه شد.');
+ },{label:'ثبت',wide:true});
+}
+function printCerts(list){
+ document.querySelector('.certs')?.remove();
+ const s0=db.settings,box=document.createElement('div');box.className='certs';
+ box.innerHTML=list.map(({p,s,r})=>'<div class="cert"><h3>'+esc(s0.org)+'</h3><h2>'+esc(s0.unit)+'</h2><h1>گواهی شرکت در دوره آموزشی</h1><div>بدین‌وسیله گواهی می‌شود <b>'+esc(p.name)+'</b> ('+esc(gname(r.g))+') در کلاس «<b>'+esc(sname(s))+'</b>» که در تاریخ <b>'+fa(s.date||'')+'</b> برگزار شد شرکت نموده و <b>'+fmt(r.v)+'</b> امتیاز '+TYPES[r.t]+' کسب کرده است.'+(s.snap.hours?' (مدت دوره: '+fmt(s.snap.hours)+' ساعت)':'')+'</div><div class="sg">'+esc(s0.signer)+'<br>'+esc(s0.signerTitle)+'</div></div>').join('');
+ document.body.appendChild(box);document.body.classList.add('pc');
+ const done=()=>{document.body.classList.remove('pc');box.remove();window.removeEventListener('afterprint',done)};
+ window.addEventListener('afterprint',done);if(window.AndroidBridge){window.AndroidBridge.print();setTimeout(done,1500)}else window.print();
+}
+
+/* ---------- ورودی/خروجی ---------- */
+function exportJson(){dl(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),'پشتیبان_آموزش_پرسنل.json');db.meta.lastBackup=new Date().toISOString();db.meta.dirty=0;persist();render();toast('فایل پشتیبان ساخته شد.')}
+function replaceDb(n,msg,logTxt){try{localStorage.setItem(PREV,JSON.stringify(db))}catch(e){toast('ذخیره نسخه فعلی برای بازگشت ناموفق بود (فضای مرورگر پر است)؛ عملیات انجام نشد. ابتدا پشتیبان JSON بگیرید.','bad');return false}db=n;logE('سیستم',logTxt||msg);persist();ui.sid='';render();toast(msg)}
+async function doRestore(f){
+ try{
+  const res=normalizeDb(JSON.parse(await f.text())),d=res.db;
+  const nA=x=>Object.values(x.att).reduce((n,a)=>n+Object.keys(a).length,0);
+  const stat=x=>fa(x.staff.length)+' پرسنل، '+fa(x.classes.length)+' کلاس، '+fa(x.sessions.length)+' نوبت، '+fa(nA(x))+' ثبت حضور/غیاب';
+  if(!confirm('مقایسه پیش از جایگزینی:\nاطلاعات فعلی: '+stat(db)+'\nفایل پشتیبان: '+stat(d)+((nA(d)<nA(db)||d.staff.length<db.staff.length)?'\n⚠ فایل پشتیبان از اطلاعات فعلی کوچک‌تر است؛ مطمئن شوید فایل درست را انتخاب کرده‌اید.':'')+(res.warnings.length?'\n'+fa(res.warnings.length)+' مورد جزئی اصلاح شد.':'')+'\nاطلاعات فعلی جایگزین می‌شود (نسخه فعلی برای بازگشت نگه‌داری می‌شود). ادامه می‌دهید؟'))return;
+  d.meta.dirty=1;replaceDb(d,'بازیابی انجام شد.','بازیابی از فایل پشتیبان');
+ }catch(e){toast('فایل پشتیبان معتبر نیست: '+(e.message||''),'bad')}
+}
+function attRows(){const rows=[['نام','گروه زمان ثبت','کلاس','تاریخ','وضعیت','نوع امتیاز','امتیاز','دستی','علت','علت غیبت','توضیح']];
+ for(const s of sortedSessions())for(const p of db.staff){const r=rec(s.id,p.id);if(r)rows.push([p.name,r.s==='p'?gname(r.g):gname(r.g||p.groupId),sname(s),s.date,r.s==='p'?'حاضر':'غایب',r.s==='p'?TYPES[r.t]:'',r.s==='p'?r.v:'',r.m?'بله':'',r.n||'',r.r||'',r.c||''])}
+ return rows}
+function csvAtt(){dl(new Blob([csv(attRows())],{type:'text/csv;charset=utf-8'}),'ریز_حضورها.csv')}
+function xlsAtt(){const rows=attRows();dl(new Blob(['﻿<html><head><meta charset="utf-8"></head><body dir="rtl"><table border="1">'+rows.map((r,i)=>'<tr>'+r.map(v=>'<'+(i?'td':'th')+'>'+esc(v)+'</'+(i?'td':'th')+'>').join('')+'</tr>').join('')+'</table></body></html>'],{type:'application/vnd.ms-excel;charset=utf-8'}),'ریز_حضورها.xls')}
+
+/* ---------- عملیات ---------- */
+const A={
+ nav(d){ui.view=d.v;ui.q='';render(false)},
+ goRep(d){ui.view='reports';ui.rtab=d.t;render(false)},
+ rtab(d){ui.rtab=d.k;render()},goAttend(){ui.view='attend';render(false)},
+ calNav(d){if(!ui.cal){views.calendar()}const k=+d.d;if(k===0){ui.cal=null}else{let m=ui.cal.m+k,y=ui.cal.y;if(m>12){m=1;y++}if(m<1){m=12;y--}ui.cal={y,m}}render()},
+ att(d){const s=ses(d.s),p=stf(d.p),cur=rec(d.s,d.p)?.s||'';let st=d.st;if(cur===st)st='';
+  if(st&&!isHeld(s)){toast('این نوبت '+(effStatus(s)==='canceled'?'لغو شده':'هنوز برگزار نشده')+' است و ثبت حضور/غیبت برای آن مجاز نیست.','bad');return}
+  if(st==='p'){const e=earlier(d.p,d.s);if(e){toast('این فرد قبلاً در '+showDate(e.date)+' همین کلاس را گذرانده است.','bad');return}}
+  setAtt(d.s,d.p,st);logE('حضور',lg(s,p)+' → '+(st==='p'?'حاضر ('+TYPES[rec(d.s,d.p).t]+' '+rec(d.s,d.p).v+')':st==='a'?'غایب':'پاک شد'));commit();render()},
+ allPresent(){const s=ses(ui.sid);if(!s)return;if(!isHeld(s)){toast('این نوبت برگزار نشده یا لغو شده است و ثبت حضور برای آن مجاز نیست.','bad');return}let ok=0,sk=0;const q=norm(ui.q);
+  db.staff.filter(p=>p.active&&(!ui.gf||p.groupId===ui.gf)&&(!q||norm(p.name).includes(q))&&!rec(s.id,p.id)).forEach(p=>{if(earlier(p.id,s.id))sk++;else{setAtt(s.id,p.id,'p');ok++}});
+  logE('حضور','ثبت گروهی حاضر در '+sname(s)+' / '+(s.date||'')+' — '+ok+' نفر');commit();render();toast(fa(ok)+' نفر حاضر ثبت شد'+(sk?' و '+fa(sk)+' نفر (قبلاً گذرانده) رد شد':'')+'.')},
+ attClear(){const s=ses(ui.sid);if(!s||!confirm('همه حضور و غیاب این نوبت پاک شود؟'))return;delete db.att[s.id];logE('حضور','پاک‌کردن کل نوبت '+sname(s)+' / '+(s.date||''));commit();render()},
+ recEdit(d){recModal(d.s,d.p)},noteEdit(d){noteModal(d.s,d.p)},staffImport(){importModal()},
+ recReset(d){const r=rec(d.s,d.p),s=ses(d.s);if(!r)return;const df=resolve(s,r.g);r.t=df.t;r.v=df.v;r.m=0;r.n='';logE('ویرایش امتیاز','بازگشت به قانون خودکار: '+lg(s,stf(d.p)));commit();closeModal();render();toast('طبق قانون خودکار بازگردانده شد.')},
+ cert(d){const s=ses(d.s);if(!s)return;const items=[];
+  for(const p of db.staff){if(d.p&&p.id!==d.p)continue;const r=rec(s.id,p.id);if(r?.s==='p')items.push({p,s,r})}
+  if(!items.length){toast('حاضری برای صدور گواهی نیست.','bad');return}printCerts(items)},
+ classNew(){classModal(null)},classEdit(d){classModal(cls(d.id))},
+ classToggle(d){const c=cls(d.id);c.active=!c.active;logE('کلاس',(c.active?'فعال‌سازی «':'آرشیو «')+c.name+'»');commit();render()},
+ classDel(d){const c=cls(d.id);if(db.sessions.some(s=>s.classId===c.id)){toast('این کلاس سابقه دارد و حذف نمی‌شود؛ آن را آرشیو کنید.','bad');return}if(confirm('کلاس «'+c.name+'» حذف شود؟')){db.classes=db.classes.filter(x=>x!==c);logE('کلاس','حذف «'+c.name+'»');commit();render()}},
+ sesNew(d){sessionModal(null,d?.id)},sesEdit(d){sessionModal(ses(d.id))},
+ sesAttend(d){ui.sid=d.id;ui.view='attend';render(false)},
+ sesDel(d){const s=ses(d.id),n=Object.keys(db.att[s.id]||{}).length;if(!confirm('نوبت «'+sname(s)+'» '+showDate(s.date)+' حذف شود؟'+(n?'\n'+fa(n)+' ثبت حضور/غیاب آن هم پاک می‌شود.':'')))return;logE('نوبت','حذف '+sname(s)+' / '+(s.date||'')+' ('+n+' ثبت حضور)');db.sessions=db.sessions.filter(x=>x!==s);delete db.att[s.id];commit();render()},
+ sesRefresh(d){const s=ses(d.id);if(!confirm('قانون این نوبت از تعریف فعلی کلاس بازخوانی شود؟\nامتیاز حضورهای غیردستی این نوبت دوباره (طبق گروه زمان ثبت) محاسبه می‌شود.'))return;
+  s.snap=mkSnap(cls(s.classId));for(const r of Object.values(db.att[s.id]||{}))if(r.s==='p'&&!r.m){const x=resolve(s,r.g);r.t=x.t;r.v=x.v}logE('نوبت','بازخوانی قانون '+sname(s)+' / '+(s.date||''));commit();render();toast('بازخوانی شد.')},
+ fillToday(){const i=document.querySelector('.ov input[name=date]');if(i)i.value=fa(today())},
+ staffNew(){staffModal(null)},staffEdit(d){staffModal(stf(d.id))},staffProfile(d){profile(stf(d.id))},
+ staffToggle(d){const p=stf(d.id);p.active=!p.active;logE('پرسنل',(p.active?'فعال‌سازی «':'غیرفعال‌سازی «')+p.name+'»');commit();render()},
+ staffDel(d){const p=stf(d.id);if(db.sessions.some(s=>rec(s.id,p.id))){toast('این فرد سابقه حضور دارد؛ به‌جای حذف، غیرفعالش کنید.','bad');return}if(confirm('«'+p.name+'» حذف شود؟')){db.staff=db.staff.filter(x=>x!==p);logE('پرسنل','حذف «'+p.name+'»');commit();render()}},
+ groups(){groupsModal()},settings(){settingsModal()},
+ groupDel(d){const g=grp(d.id);const used=db.staff.some(p=>p.groupId===g.id)||Object.values(db.att).some(a=>Object.values(a).some(r=>r.g===g.id))||db.classes.some(c=>c.rules[g.id])||db.sessions.some(s=>s.snap.rules?.[g.id]);
+  if(used){toast('این گروه در پرسنل، قوانین یا سوابق استفاده شده و حذف نمی‌شود.','bad');return}
+  if(!confirm('گروه «'+g.name+'» حذف شود؟'))return;db.groups=db.groups.filter(x=>x!==g);logE('گروه شغلی','حذف «'+g.name+'»');commit();groupsModal();render()},
+ repCsv(){exportRep('csv')},repXls(){exportRep('xls')},
+ logCsv(){dl(new Blob([csv([['زمان','کاربر','نوع','شرح'],...(db.log||[]).map(e=>[e.t,e.who,e.act,e.txt])])],{type:'text/csv;charset=utf-8'}),'تاریخچه_تغییرات.csv')},
+ csvAtt,xlsAtt,print(){window.AndroidBridge?window.AndroidBridge.print():window.print()},backup:exportJson,
+ restore(){$('#rf').click()},
+ undoRestore(){const p=localStorage.getItem(PREV);if(!p||!confirm('به وضعیت قبل از آخرین بازیابی/پاک‌سازی برگردیم؟'))return;try{const cur=JSON.stringify(db);db=normalizeDb(JSON.parse(p)).db;localStorage.setItem(PREV,cur);logE('سیستم','بازگشت به وضعیت قبلی');persist();render();toast('بازگردانده شد.')}catch(e){toast('بازگردانی ممکن نشد.','bad')}},
+ resetEmpty(){if(!confirm('همه اطلاعات پاک شود؟ (نسخه فعلی برای بازگشت نگه‌داری می‌شود. بهتر است اول پشتیبان بگیرید.)'))return;
+  const g=['پرستار','کمک‌پرستار','ماما','سایر'].map(name=>({id:uid(),name,min:0}));replaceDb({version:4,groups:g,classes:[],sessions:[],staff:[],att:{},log:[],settings:{...db.settings},meta:{sample:false,lastBackup:'',dirty:1}},'اطلاعات خالی آماده است.','پاک‌سازی کامل اطلاعات')},
+ loadSample(){if(confirm('نمونه جایگزین اطلاعات فعلی شود؟'))replaceDb(seed(),'نمونه بارگذاری شد.','بارگذاری نمونه')}
+};
+document.addEventListener('click',e=>{
+ if(e.target.closest('[data-close]')){closeModal();return}
+ const b=e.target.closest('[data-act]');if(b&&A[b.dataset.act]&&!b.disabled)A[b.dataset.act](b.dataset)});
+document.addEventListener('input',e=>{if(e.target.dataset?.q!==undefined){ui.q=e.target.value;render()}});
+document.addEventListener('change',e=>{
+ const t=e.target;
+ if(t.id==='impf'){const f=t.files[0];if(f)f.text().then(x=>{const ta=document.querySelector('.ov textarea[name=data]');if(ta)ta.value=x.replace(/^﻿/,'')});t.value='';return}
+ if(t.id==='rf'){if(t.files[0])doRestore(t.files[0]);t.value='';return}
+ const k=t.dataset?.f;if(!k)return;
+ if(k.startsWith('rep.')){const key=k.slice(4);let v=t.value;
+  if(key==='from'||key==='to'){const d=normDate(v);if(d===null){toast('تاریخ نامعتبر است.','bad');v=''}else v=d}
+  if(key==='year'){const y=num(v);v=Number.isFinite(y)&&y>=1300&&y<=1500?String(y):''}
+  ui.rep[key]=v}
+ else if(k==='inactive')ui.inactive=t.checked;else ui[k]=t.value;
+ render();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+try{const pp=navigator.storage?.persist?.();if(pp&&pp.catch)pp.catch(()=>{})}catch(e){}
+load();render();if(loadMsg)toast(loadMsg);
+window.__app={get db(){return db},set db(v){db=v},ui,views,A,normalizeDb,pts,ranking,setAtt,earlier,resolve,groupSummary,seed,repData,statusOf,complianceRows,deficitRows,analysis,toJdn,fromJdn,addMonths,addDays,wdIdx,monthLen,normDate,today,blocks,mkSnap,logE,exportRep,planStaff,applyPlan,classSummary,aggregate,hasHours,effStatus,isHeld,todayC,gOf,parseTable,doRestore,replaceDb,profile};
+})();
+</script>
+</body></html>
